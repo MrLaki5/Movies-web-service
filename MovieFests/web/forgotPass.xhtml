@@ -48,6 +48,9 @@
                     <label>New password</label>
                     <h:inputSecret class="form-control" value="#{loginController.password}"/>
                     <br/>
+                    <h:outputText class="text-danger" value="#{loginController.loginErr}"/>
+                    <br/>
+                    <br/>
                     <h:commandButton class="btn btn-lg btn-primary btn-block" action="#{controller.changePass()}" value="Change"/>
                     <br/>
                     <h:link class="mt-5 mb-3 text-muted" outcome="login">Back</h:link>

@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     
     <h:head>
         <!-- Bootstrap core CSS -->
@@ -29,7 +30,7 @@
         <br/>
         <div class="container-fluid text-center">
             
-            <h:form class="form-signin">            
+            <h:form class="form-signin" id="form_content">            
                 <div class="row-fluid">
                     <h1 class="h3 mb-3 font-weight-normal">Register</h1>
                 </div>
@@ -37,16 +38,16 @@
                     <div class="offset-sm-3 col-sm-3">
                         <br/>                   
                         <label>First name</label>
-                        <h:inputText class="form-control" value="#{loginController.uesrname}"/>
+                        <h:inputText class="form-control" value="#{loginController.regFirstName}"/>
                         <br/>
                         <label>Last name</label>
-                        <h:inputText class="form-control" value="#{loginController.password}"/>
+                        <h:inputText class="form-control" value="#{loginController.regLastName}"/>
                         <br/>
                         <label>Username</label>
-                        <h:inputText class="form-control" value="#{loginController.password}"/>
+                        <h:inputText class="form-control" value="#{loginController.regUsername}"/>
                         <br/>                      
                         <label>Phone</label>
-                        <h:inputText class="form-control" value="#{loginController.password}"/>
+                        <h:inputText class="form-control" value="#{loginController.regTelephone}"/>
                         <br/>
                         <br/>
                     </div>   
@@ -54,13 +55,13 @@
                     <div class="col-sm-3">
                         <br/>                   
                         <label>Email</label>
-                        <h:inputText class="form-control" value="#{loginController.uesrname}"/>
+                        <h:inputText class="form-control" value="#{loginController.regEmail}"/>
                         <br/>
                         <label>Password</label>
-                        <h:inputSecret class="form-control" value="#{loginController.password}"/>
+                        <h:inputSecret class="form-control" value="#{loginController.regPassword}"/>
                         <br/>
                         <label>Confirm password</label>
-                        <h:inputSecret class="form-control" value="#{loginController.password}"/>
+                        <h:inputSecret class="form-control" value="#{loginController.regConfPass}"/>
                         <br/>
 
                         <br/>
@@ -70,7 +71,12 @@
                 
                 <div class="row">
                     <div class="offset-4 col-sm-4">
-                        <h:commandButton class="btn btn-lg btn-primary btn-block" action="#{loginController.register()}" value="Register"/>
+                        <h:outputText class="text-danger" value="#{loginController.registerErr}" id="errorMessage"/>
+                        <br/>
+                        <br/>
+                        <h:commandButton class="btn btn-lg btn-primary btn-block" value="Register" action="#{loginController.register()}">
+                            <f:ajax execute="form_content" render="errorMessage"/>
+                        </h:commandButton>
                     </div>
                 </div>
             </h:form>

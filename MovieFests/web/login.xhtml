@@ -45,9 +45,12 @@
                     <label>Password</label>
                     <h:inputSecret class="form-control" value="#{loginController.password}"/>
                     <br/>
-                    <h:commandButton class="btn btn-lg btn-primary btn-block" action="#{loginController.login()}" value="Sign in"/>
+                    <h:outputText class="text-danger" value="#{loginController.loginErr}"/>
                     <br/>
-                   
+                    <br/>
+                    <h:commandButton class="btn btn-lg btn-primary btn-block" action="#{loginController.login()}" value="Sign in"/>
+                    
+                    <br/>
                     <h:link class="mt-5 mb-3 text-muted" outcome="forgotPass">Forgot password?</h:link>
                   </h:form>
 
