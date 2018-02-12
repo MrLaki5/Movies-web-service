@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     
     <h:head>
         <!-- Bootstrap core CSS -->
@@ -34,7 +35,7 @@
             <div class="row-fluid">
               <div class="offset-4 col-4">
 
-                  <h:form class="form-signin">
+                  <h:form class="form-signin" id="form_content">
 
                     <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
                     <br/>                   
@@ -45,10 +46,12 @@
                     <label>Password</label>
                     <h:inputSecret class="form-control" value="#{loginController.password}"/>
                     <br/>
-                    <h:outputText class="text-danger" value="#{loginController.loginErr}"/>
+                    <h:outputText class="#{loginController.logErrColor}" value="#{loginController.loginErr}" id="errorMessage"/>
                     <br/>
                     <br/>
-                    <h:commandButton class="btn btn-lg btn-primary btn-block" action="#{loginController.login()}" value="Sign in"/>
+                    <h:commandButton class="btn btn-lg btn-primary btn-block" action="#{loginController.login()}" value="Sign in">
+                         <f:ajax execute="form_content" render="errorMessage"/>
+                    </h:commandButton>
                     
                     <br/>
                     <h:link class="mt-5 mb-3 text-muted" outcome="forgotPass">Forgot password?</h:link>

@@ -18,7 +18,7 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class LoginController {
-    private String Uesrname;
+    private String Username;
     private String Password;
     private int currPage=0;
     
@@ -30,34 +30,49 @@ public class LoginController {
     private String RegPassword;
     private String RegConfPass;
     
+    private String ForgotUsername;
+    private String ForgotPassword;
+    private String ForgotNewPassword;
+    
+    private String logErrColor="text-danger";
     private String loginErr="";
     private String registerErr="";
+    private String passErr="";
     
     //LOGIC METHODS=============
     
     public String login(){
+        loginErr="";
+        logErrColor="";
+        if("".equals(Username) || "".equals(Password)){
+            loginErr="All fields must be set";
+            logErrColor="text-danger";
+            return "";
+        }
         return "";
     }
     
     public String register(){
         int errF=0;
+        registerErr="";
         if("".equals(RegUsername) || "".equals(RegFirstName) ||
            "".equals(RegLastName) || "".equals(RegTelephone) ||
            "".equals(RegEmail) || "".equals(RegPassword) ||
            "".equals(RegConfPass) ){
             errF=1;
             registerErr="All fields must be set";
-            return goRegister();
+            return "";
         }
         if(!RegPassword.equals(RegConfPass)){
             registerErr="Passwords must be matching";
-            return goRegister();
+            return "";
         }
         if(errF==1){
-            return goRegister();
+            return "";
         }
         else{
-            loginErr="Password change successful!";
+            logErrColor="text-success";
+            loginErr="Registration successful!";
             registerErr="";
             RegUsername="";
             RegFirstName="";
@@ -70,26 +85,38 @@ public class LoginController {
         }
     }
     
+    public String changePass(){
+        if("".equals(ForgotUsername) || "".equals(ForgotPassword) || "".equals(ForgotNewPassword)){
+            passErr="All fields must be set";
+            return "";
+        }
+        return goLogin();
+    }
+    
     //REDIRECT METHODS============
     
     public String goRegister(){
         currPage=1;
-        return "register";
+        passErr="";
+        registerErr="";
+        return "register?faces-redirect=true";
     }
     
     public String goLogin(){
         currPage=0;
-        return "login";
+        passErr="";
+        registerErr="";
+        return "login?faces-redirect=true";
     }
 
     //GETHERS AND SETTERS=========
     
     public String getUesrname() {
-        return Uesrname;
+        return Username;
     }
 
     public void setUesrname(String Uesrname) {
-        this.Uesrname = Uesrname;
+        this.Username = Uesrname;
     }
 
     public String getPassword() {
@@ -178,6 +205,46 @@ public class LoginController {
 
     public void setRegisterErr(String registerErr) {
         this.registerErr = registerErr;
+    }
+
+    public String getLogErrColor() {
+        return logErrColor;
+    }
+
+    public void setLogErrColor(String logErrColor) {
+        this.logErrColor = logErrColor;
+    }
+
+    public String getPassErr() {
+        return passErr;
+    }
+
+    public void setPassErr(String passErr) {
+        this.passErr = passErr;
+    }
+
+    public String getForgotUsername() {
+        return ForgotUsername;
+    }
+
+    public void setForgotUsername(String ForgotUsername) {
+        this.ForgotUsername = ForgotUsername;
+    }
+
+    public String getForgotPassword() {
+        return ForgotPassword;
+    }
+
+    public void setForgotPassword(String ForgotPassword) {
+        this.ForgotPassword = ForgotPassword;
+    }
+
+    public String getForgotNewPassword() {
+        return ForgotNewPassword;
+    }
+
+    public void setForgotNewPassword(String ForgotNewPassword) {
+        this.ForgotNewPassword = ForgotNewPassword;
     }
     
     

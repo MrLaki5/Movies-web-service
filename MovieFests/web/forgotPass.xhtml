@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     
     <h:head>
         <!-- Bootstrap core CSS -->
@@ -34,24 +35,26 @@
             <div class="row-fluid">
               <div class="offset-4 col-4">
 
-                  <h:form class="form-signin">
+                  <h:form class="form-signin" id="form_content">
 
                     <h1 class="h3 mb-3 font-weight-normal">Change password</h1>
                     <br/>                   
                       
                     <label>Username</label>
-                    <h:inputText class="form-control" value="#{loginController.uesrname}"/>
+                    <h:inputText class="form-control" value="#{loginController.forgotUsername}"/>
                     <br/>
                     <label>Old password</label>
-                    <h:inputSecret class="form-control" value="#{loginController.password}"/>
+                    <h:inputSecret class="form-control" value="#{loginController.forgotPassword}"/>
                     <br/>
                     <label>New password</label>
-                    <h:inputSecret class="form-control" value="#{loginController.password}"/>
+                    <h:inputSecret class="form-control" value="#{loginController.forgotNewPassword}"/>
                     <br/>
-                    <h:outputText class="text-danger" value="#{loginController.loginErr}"/>
+                    <h:outputText class="text-danger" value="#{loginController.passErr}" id="errorMessage"/>
                     <br/>
                     <br/>
-                    <h:commandButton class="btn btn-lg btn-primary btn-block" action="#{controller.changePass()}" value="Change"/>
+                    <h:commandButton class="btn btn-lg btn-primary btn-block" action="#{loginController.changePass()}" value="Change">
+                        <f:ajax execute="form_content" render="errorMessage"/>
+                    </h:commandButton>
                     <br/>
                     <h:link class="mt-5 mb-3 text-muted" outcome="login">Back</h:link>
                   </h:form>
