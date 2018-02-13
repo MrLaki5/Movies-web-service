@@ -67,6 +67,59 @@ public class LoginController {
             registerErr="Passwords must be matching";
             return "";
         }
+        if(RegPassword.length()<8 || RegPassword.length()>12){
+            registerErr="Wrong password length";
+            return "";
+        }
+        int bigLetNum=0;
+        int smallLetNum=0;
+        int numberNum=0;
+        int specialNum=0;
+        char pom='a';
+        for(int i=0; i<RegPassword.length(); i++){
+            if(pom==RegPassword.charAt(i)){
+                registerErr="Two neighbour characters are same";
+                return "";
+            }
+            pom=RegPassword.charAt(i);
+            if(Character.isUpperCase(RegPassword.charAt(i))){
+                bigLetNum++;
+                continue;
+            }
+            if(i==0){
+                registerErr="First character must be uppercase";
+                return "";
+            }
+            if(Character.isLowerCase(RegPassword.charAt(i))){
+                smallLetNum++;
+                continue;
+            }
+            if(Character.isDigit(RegPassword.charAt(i))){
+                numberNum++;
+                continue;
+            }
+            if((RegPassword.charAt(i)=='#')||(RegPassword.charAt(i)=='*')||
+               (RegPassword.charAt(i)=='.')||(RegPassword.charAt(i)=='!')||
+               (RegPassword.charAt(i)=='?')||(RegPassword.charAt(i)=='$')){
+                specialNum++;
+            }
+        }
+        if(bigLetNum<2){
+            registerErr="There must be minimum two uppercase letters in password";
+            return "";
+        }
+        if(smallLetNum<3){
+            registerErr="There must be minimum three lowercase letters in password";
+            return "";
+        }
+        if(numberNum<1){
+            registerErr="There must be minimum one numeric in password";
+            return "";
+        }
+        if(specialNum<1){
+            registerErr="There must be minimum one special character in password";
+            return "";
+        }
         if(errF==1){
             return "";
         }
