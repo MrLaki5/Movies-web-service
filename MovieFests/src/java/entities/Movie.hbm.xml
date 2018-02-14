@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 14, 2018 12:46:37 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entities.Movie" table="Movie" catalog="MovieFests" optimistic-lock="version">
+        <id name="idMovie" type="java.lang.Integer">
+            <column name="IdMovie" />
+            <generator class="identity" />
+        </id>
+        <property name="name" type="string">
+            <column name="Name" length="20" />
+        </property>
+        <property name="picture" type="binary">
+            <column name="Picture" />
+        </property>
+        <property name="year" type="java.lang.Integer">
+            <column name="Year" />
+        </property>
+        <property name="about" type="string">
+            <column name="About" length="100" />
+        </property>
+        <property name="director" type="string">
+            <column name="Director" length="50" />
+        </property>
+        <property name="length" type="java.lang.Integer">
+            <column name="Length" />
+        </property>
+        <property name="country" type="string">
+            <column name="Country" length="30" />
+        </property>
+        <property name="imdb" type="string">
+            <column name="imdb" length="60" />
+        </property>
+        <property name="tomato" type="string">
+            <column name="tomato" length="60" />
+        </property>
+        <property name="youtube" type="string">
+            <column name="youtube" length="60" />
+        </property>
+    </class>
+</hibernate-mapping>

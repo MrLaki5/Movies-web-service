@@ -5,6 +5,8 @@
  */
 package controllers;
 
+import db.UserHelper;
+import entities.User;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -18,6 +20,8 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class LoginController {
+    private UserHelper userHelper=new UserHelper();
+    
     private String Username;
     private String Password;
     private int currPage=0;
@@ -46,6 +50,18 @@ public class LoginController {
         logErrColor="";
         if("".equals(Username) || "".equals(Password)){
             loginErr="All fields must be set";
+            logErrColor="text-danger";
+            return "";
+        }
+        User user=userHelper.getUserById(Username);
+        if(user==null){
+            loginErr="Wrong username";
+            logErrColor="text-danger";
+            Username="";
+            return "";
+        }
+        if(!user.getPassword().equals(Password)){
+            loginErr="Wrong password";
             logErrColor="text-danger";
             return "";
         }
@@ -120,6 +136,13 @@ public class LoginController {
             registerErr="There must be minimum one special character in password";
             return "";
         }
+        User user=userHelper.getUserById(RegUsername);
+        if(user!=null){
+            registerErr="Username already exists";
+            return "";
+        }
+        user=new User(RegUsername, RegFirstName, RegLastName, RegEmail, RegTelephone, RegPassword, "NoType");
+        userHelper.addUser(user);
         if(errF==1){
             return "";
         }
