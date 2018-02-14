@@ -9,6 +9,8 @@ import db.UserHelper;
 import entities.User;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 
 
@@ -21,6 +23,7 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class LoginController {
     private UserHelper userHelper=new UserHelper();
+    private int isLoged=0;
     
     private String Username;
     private String Password;
@@ -65,7 +68,25 @@ public class LoginController {
             logErrColor="text-danger";
             return "";
         }
+        if(user.getType().equals("NoType")){
+            loginErr="Registration not confirmed";
+            logErrColor="text-danger";
+            return "";
+        }
+        
+        if(user.getType().equals("User")){
+            isLoged=1;
+            return goFestivals();
+        }
         return "";
+    }
+    
+    public String logout(){
+        isLoged=0;
+        FacesContext context=FacesContext.getCurrentInstance();
+        HttpSession session=(HttpSession) context.getExternalContext().getSession(false);
+        session.invalidate();
+        return goLogin();
     }
     
     public String register(){
@@ -183,6 +204,11 @@ public class LoginController {
         passErr="";
         registerErr="";
         return "login?faces-redirect=true";
+    }
+    
+    public String goFestivals(){
+        currPage=1;
+        return "indexUser?faces-redirect=true";
     }
 
     //GETHERS AND SETTERS=========
@@ -321,6 +347,14 @@ public class LoginController {
 
     public void setForgotNewPassword(String ForgotNewPassword) {
         this.ForgotNewPassword = ForgotNewPassword;
+    }
+
+    public int getIsLoged() {
+        return isLoged;
+    }
+
+    public void setIsLoged(int isLoged) {
+        this.isLoged = isLoged;
     }
     
     

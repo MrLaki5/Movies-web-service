@@ -51,39 +51,91 @@
                     
                       
                     <c:choose>
-                        <c:when test="#{loginController.currPage==1}">
-                            <li class="nav-item active">
-                                
-                                <h:form class="nav-item active">
-                                    <h:commandLink action="#{loginController.goRegister()}" class="nav-link">Register</h:commandLink>
-                                </h:form>
-                                
-                            </li>
+                        <c:when test="#{loginController.isLoged==0}">
+                            <c:choose>
+                                  <c:when test="#{loginController.currPage==1}">
+                                      <li class="nav-item active">
+
+                                          <h:form class="nav-item active">
+                                              <h:commandLink action="#{loginController.goRegister()}" class="nav-link">Register</h:commandLink>
+                                          </h:form>
+
+                                      </li>
+                                  </c:when>
+                                  <c:otherwise>
+                                      <li class="nav-item">
+                                          <h:form class="nav-item">
+                                              <h:commandLink action="#{loginController.goRegister()}" class="nav-link">Register</h:commandLink>
+                                          </h:form> 
+                                      </li>
+                                  </c:otherwise>
+                              </c:choose>
                         </c:when>
                         <c:otherwise>
-                            <li class="nav-item">
-                                <h:form class="nav-item">
-                                    <h:commandLink action="#{loginController.goRegister()}" class="nav-link">Register</h:commandLink>
-                                </h:form> 
-                            </li>
+                            
+                            <c:choose>
+                                <c:when test="#{loginController.isLoged==1}">
+                                
+                                    <c:choose>                                
+                                        <c:when test="#{loginController.currPage==1}">
+                                            <li class="nav-item active">
+                                                <h:form class="nav-item active">
+                                                    <h:commandLink action="#{loginController.goFestivals()}" class="nav-link">Festivals</h:commandLink>
+                                                </h:form>
+
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="nav-item">
+                                                <h:form class="nav-item">
+                                                    <h:commandLink action="#{loginController.goFestivals()}" class="nav-link">Festivals</h:commandLink>
+                                                </h:form> 
+                                            </li>
+                                        </c:otherwise>                                
+                                    </c:choose>
+                                    
+                                </c:when>
+                            </c:choose>
+                            
                         </c:otherwise>
                     </c:choose>
 
-                    
                     <c:choose>
-                        <c:when test="#{loginController.currPage==0}">
-                            <li class="nav-item active">
-                                <h:form class="nav-item active">
-                                    <h:commandLink action="#{loginController.goLogin()}" class="nav-link">Login</h:commandLink>
-                                </h:form> 
-                            </li>
+                        <c:when test="#{loginController.isLoged==1}">
+                            <c:choose>
+                                <c:when test="#{loginController.currPage==0}">
+                                    <li class="nav-item active">
+                                        <h:form class="nav-item active">
+                                            <h:commandLink action="#{loginController.logout()}" class="nav-link">Logout</h:commandLink>
+                                        </h:form> 
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <h:form class="nav-item">
+                                        <h:commandLink action="#{loginController.logout()}" class="nav-link">Logout</h:commandLink>
+                                    </h:form> 
+                                </c:otherwise>
+                            </c:choose>  
                         </c:when>
                         <c:otherwise>
-                            <h:form class="nav-item">
-                                <h:commandLink action="#{loginController.goLogin()}" class="nav-link">Login</h:commandLink>
-                            </h:form> 
+                            <c:choose>
+                                <c:when test="#{loginController.currPage==0}">
+                                    <li class="nav-item active">
+                                        <h:form class="nav-item active">
+                                            <h:commandLink action="#{loginController.goLogin()}" class="nav-link">Login</h:commandLink>
+                                        </h:form> 
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <h:form class="nav-item">
+                                        <h:commandLink action="#{loginController.goLogin()}" class="nav-link">Login</h:commandLink>
+                                    </h:form> 
+                                </c:otherwise>
+                            </c:choose>  
                         </c:otherwise>
-                    </c:choose>  
+                    </c:choose>
+                      
+                    
 
                   </ul>                
                 </div>
