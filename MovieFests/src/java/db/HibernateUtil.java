@@ -5,6 +5,7 @@
  */
 package db;
 
+import java.io.Serializable;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 
@@ -14,7 +15,7 @@ import org.hibernate.SessionFactory;
  *
  * @author milanlazarevic
  */
-public class HibernateUtil {
+public class HibernateUtil implements Serializable{
 
     private static final SessionFactory sessionFactory;
     

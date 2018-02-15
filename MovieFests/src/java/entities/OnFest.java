@@ -9,7 +9,7 @@ package entities;
 public class OnFest  implements java.io.Serializable {
 
 
-     private OnFestId id;
+    private OnFestId id;
 
     public OnFest() {
     }

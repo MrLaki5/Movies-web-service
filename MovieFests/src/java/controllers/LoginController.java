@@ -494,7 +494,7 @@ public class LoginController {
         }
         else{
             for(int i=0; i<tempList.size();i++){
-                if(tempList.get(i).equals(festivalName)){
+                if(festivalName.contains(tempList.get(i).getName())){
                     sendList.add(tempList.get(i));
                 }
             }

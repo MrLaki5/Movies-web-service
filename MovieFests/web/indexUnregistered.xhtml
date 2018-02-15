@@ -59,7 +59,7 @@
             <div class="row"><div class="col-md-12" style="height: 20px"></div></div>
             <div class="row">
                 <div class=" offset-md-2 col-md-8">
-                    <p:dataTable var="elem" value="#{loginController.festivals}" id="tableFest">
+                    <p:dataTable var="elem" value="#{loginController.festivals}" id="tableFest" paginator="true" rows="10">
                         <p:column headerText="Name">
                             <h:outputText value="#{elem.name}" />
                         </p:column>

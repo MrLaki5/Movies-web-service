@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     
     <h:head>
         <!-- Bootstrap core CSS -->
@@ -30,12 +31,19 @@
                     <h1 class="h3 mb-3 font-weight-normal">Festivals</h1>
                 </div>
             </div>
-            <h:form id="form_content">
-            <div class="row">               
-                    <div class="offset-md-2 col-md-2">
+
+            <h:form id="form_content"  style="display: #{userController.isTopFive==true? 'none' : 'block'}">
+                <div class="row">
+                    <div class="offset-md-1 col-md-2">
                         <h:panelGrid columns="1">
-                            <p:outputLabel value="Name: "/>
+                            <p:outputLabel value="Festival name: "/>
                             <p:inputText id="nameLabel" value="#{userController.festivalName}"/>
+                        </h:panelGrid>
+                    </div>
+                    <div class="col-md-2">
+                        <h:panelGrid columns="1">
+                            <p:outputLabel value="Movie name: "/>
+                            <p:inputText id="nameMovieLabel" value="#{userController.movieName}"/>
                         </h:panelGrid>
                     </div>
                     <div class="col-md-2">
@@ -54,29 +62,53 @@
                             <f:ajax execute="form_content" render="tableFest form_content"/>
                         </h:commandButton>
                     </div>
-            </div>
+                </div>
             </h:form>
-            <div class="row"><div class="col-md-12" style="height: 20px"></div></div>
+
+            
+            <div class="row"><div class="col-md-12" style="height: 20px"></div>
+                <div class="offset-md-1">
+                    <h:outputText value="Five most recent " />
+                    <p:selectBooleanCheckbox value="#{userController.isTopFive}" id="topFiveCH" onchange="toggle()">
+                        <p:ajax update="tableFest topFiveCH" listener="#{userController.topFiveAct}" />
+                    </p:selectBooleanCheckbox>
+                </div>
+            </div>
             <div class="row">
-                <div class=" offset-md-2 col-md-8">
-                    <p:dataTable var="elem" value="#{userController.festivals}" id="tableFest">
-                        <p:column headerText="Name">
-                            <h:outputText value="#{elem.name}" />
+                <div class=" offset-md-1 col-md-10">
+                    <p:dataTable var="elem" value="#{userController.festivals}" id="tableFest" paginator="true" rows="10">
+                        <p:column headerText="Festival name">
+                            <h:outputText value="#{elem.festival.name}" />
                         </p:column>
 
                         <p:column headerText="From">
-                            <h:outputText value="#{elem.dateFrom}" />
+                            <h:outputText value="#{elem.festival.dateFrom}" />
                         </p:column>
 
                         <p:column headerText="To">
-                            <h:outputText value="#{elem.dateTo}" />
+                            <h:outputText value="#{elem.festival.dateTo}" />
+                        </p:column>
+                        
+                        <p:column headerText="Projections">
+                            <h:outputText value="#{elem.stringProjections}" />
                         </p:column>
                     </p:dataTable>
                 </div>
             </div>
-            
         </div>
             
+        
+        <script type="text/javascript">
+            function toggle() {
+              var element = document.getElementById('form_content');
+              if(element.style.display == 'block') {
+                element.style.display = 'none';
+              } else {
+                element.style.display = 'block'
+              }
+            }
+        </script>
+        
         <ui:insert name = "header" >
            <ui:include src = "templates/header.xhtml" />
         </ui:insert> 
