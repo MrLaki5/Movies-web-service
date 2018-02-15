@@ -36,7 +36,7 @@ public class FestivalHelper {
         String dateStr2=sdf.format(dateTo);
         try{
             org.hibernate.Transaction tx= session.beginTransaction();
-            Query q=session.createQuery("from Festival as fest where fest.dateFrom>='"+dateStr1+"' or fest.dateTo>='"+dateStr2+"'");
+            Query q=session.createQuery("from Festival as fest where fest.dateFrom>='"+dateStr1+"' AND fest.dateTo<='"+dateStr2+"' AND fest.dateTo>='"+sdf.format(currDate)+"'");
             festivali=(List<Festival>) q.list();
             tx.commit();
         }catch(Exception e){

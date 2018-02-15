@@ -10,6 +10,7 @@ import db.UserHelper;
 import entities.Festival;
 import entities.User;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -58,6 +59,15 @@ public class LoginController {
     private Date dateFrom=new Date();
     private Date dateTo=new Date();
     private String festivalName="";
+    
+    //CONSTRUCTOR===============
+    
+    public LoginController(){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, 20);
+        dateTo=calendar.getTime();
+    }
     
     //LOGIC METHODS=============
     
