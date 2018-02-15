@@ -5,12 +5,19 @@
  */
 package controllers;
 
+import db.FestivalHelper;
 import db.UserHelper;
+import entities.Festival;
 import entities.User;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.http.HttpSession;
+import org.primefaces.event.SelectEvent;
 
 
 
@@ -23,6 +30,8 @@ import javax.servlet.http.HttpSession;
 @SessionScoped
 public class LoginController {
     private UserHelper userHelper=new UserHelper();
+    private FestivalHelper festivalHelper=new FestivalHelper();
+    
     private int isLoged=0;
     
     private String Username;
@@ -45,6 +54,10 @@ public class LoginController {
     private String loginErr="";
     private String registerErr="";
     private String passErr="";
+    
+    private Date dateFrom=new Date();
+    private Date dateTo=new Date();
+    private String festivalName="";
     
     //LOGIC METHODS=============
     
@@ -187,6 +200,77 @@ public class LoginController {
             passErr="All fields must be set";
             return "";
         }
+        User user=userHelper.getUserById(ForgotUsername);
+        if(user==null){
+            passErr="Wrong username";
+            return "";
+        }
+        if(!user.getPassword().equals(ForgotPassword)){
+            passErr="Wrong password";
+            return "";
+        }
+        
+        if(ForgotNewPassword.length()<8 || ForgotNewPassword.length()>12){
+            passErr="Wrong password length";
+            return "";
+        }
+        int bigLetNum=0;
+        int smallLetNum=0;
+        int numberNum=0;
+        int specialNum=0;
+        char pom='a';
+        for(int i=0; i<ForgotNewPassword.length(); i++){
+            if(pom==ForgotNewPassword.charAt(i)){
+                passErr="Two neighbour characters are same";
+                return "";
+            }
+            pom=ForgotNewPassword.charAt(i);
+            if(Character.isUpperCase(ForgotNewPassword.charAt(i))){
+                bigLetNum++;
+                continue;
+            }
+            if(i==0){
+                passErr="First character must be uppercase";
+                return "";
+            }
+            if(Character.isLowerCase(ForgotNewPassword.charAt(i))){
+                smallLetNum++;
+                continue;
+            }
+            if(Character.isDigit(ForgotNewPassword.charAt(i))){
+                numberNum++;
+                continue;
+            }
+            if((ForgotNewPassword.charAt(i)=='#')||(ForgotNewPassword.charAt(i)=='*')||
+               (ForgotNewPassword.charAt(i)=='.')||(ForgotNewPassword.charAt(i)=='!')||
+               (ForgotNewPassword.charAt(i)=='?')||(ForgotNewPassword.charAt(i)=='$')){
+                specialNum++;
+            }
+        }
+        if(bigLetNum<2){
+            passErr="There must be minimum two uppercase letters in password";
+            return "";
+        }
+        if(smallLetNum<3){
+            passErr="There must be minimum three lowercase letters in password";
+            return "";
+        }
+        if(numberNum<1){
+            passErr="There must be minimum one numeric in password";
+            return "";
+        }
+        if(specialNum<1){
+            passErr="There must be minimum one special character in password";
+            return "";
+        }
+        
+        user.setPassword(ForgotNewPassword);
+        userHelper.changePass(user);
+        ForgotNewPassword="";
+        ForgotPassword="";
+        ForgotUsername="";
+        logErrColor="text-success";
+        loginErr="Password changed!";
         return goLogin();
     }
     
@@ -209,6 +293,11 @@ public class LoginController {
     public String goFestivals(){
         currPage=1;
         return "indexUser?faces-redirect=true";
+    }
+    
+    public String goUnregFestivals(){
+        currPage=2;
+        return "indexUnregistered?faces-redirect=true";
     }
 
     //GETHERS AND SETTERS=========
@@ -356,6 +445,50 @@ public class LoginController {
     public void setIsLoged(int isLoged) {
         this.isLoged = isLoged;
     }
+
+    public Date getDateFrom() {
+        return dateFrom;
+    }
+
+    public void setDateFrom(Date dateFrom) {
+        if(dateFrom.after(dateTo)){
+            return;
+        }
+        this.dateFrom = dateFrom;
+    }
+
+    public Date getDateTo() {
+        return dateTo;
+    }
+
+    public void setDateTo(Date dateTo) {
+        if(dateTo.before(dateFrom)){
+            return;
+        }
+        this.dateTo = dateTo;
+    }
+
+    public String getFestivalName() {
+        return festivalName;
+    }
+
+    public void setFestivalName(String festivalName) {
+        this.festivalName = festivalName;
+    }
     
-    
+    public List<Festival> getFestivals(){
+        List<Festival> tempList =festivalHelper.getCurrentFestivals(dateFrom, dateTo);
+        ArrayList<Festival> sendList=new ArrayList<>();
+        if(festivalName.equals("")){
+            return tempList;
+        }
+        else{
+            for(int i=0; i<tempList.size();i++){
+                if(tempList.get(i).equals(festivalName)){
+                    sendList.add(tempList.get(i));
+                }
+            }
+            return sendList;
+        }
+    }
 }

@@ -38,4 +38,12 @@ public class UserHelper implements Serializable{
         session.save(user);
         session.getTransaction().commit();
     }
+    
+    public void changePass(User user){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.update(user);
+        session.getTransaction().commit();
+    }
 }
