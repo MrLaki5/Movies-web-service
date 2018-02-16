@@ -61,6 +61,25 @@
                             
                             <c:choose>
                                 <c:when test="#{loginController.isLoged==1}">
+                                    
+                                    <c:choose>                                
+                                        <c:when test="#{loginController.currPage==2}">
+                                            <li class="nav-item active">
+                                                <h:form class="nav-item active">
+                                                    <h:commandLink action="#{loginController.goRegistrationUser()}" class="nav-link">Reservations</h:commandLink>
+                                                </h:form>
+
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="nav-item">
+                                                <h:form class="nav-item">
+                                                    <h:commandLink action="#{loginController.goRegistrationUser()}" class="nav-link">Reservations</h:commandLink>
+                                                </h:form> 
+                                            </li>
+                                        </c:otherwise>                                
+                                    </c:choose>
+                                    
                                 
                                     <c:choose>                                
                                         <c:when test="#{loginController.currPage==1}">

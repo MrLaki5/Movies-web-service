@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+        <!-- Bootstrap core CSS -->
+        <link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <!-- Custom styles for this template -->
+        <link href="resources/css/modern-business.css" rel="stylesheet"/>
+
+        <title>Movie Fests</title>
+
+    </h:head>
+
+    <h:body>  
+
+        <ui:insert name = "header" >
+            <ui:include src = "templates/header.xhtml" />
+        </ui:insert> 
+
+
+        <p:dataTable var="elem" value="#{userController.reservations}" paginator="true" rows="10">
+            <p:column headerText="Code">
+                <h:outputText style="text-success" value="#{elem.reservation.code}" rendered="#{userController.checkBoughtAndDone(elem)}"/>
+                <h:outputText value="#{elem.reservation.code}" rendered="#{!userController.checkBoughtAndDone(elem)}"/>
+            </p:column>
+            <p:column headerText="Number of cards">
+                <h:outputText value="#{elem.reservation.ticketNum}" />
+            </p:column>
+
+            <p:column headerText="Status">
+                <h:outputText value="#{elem.reservation.type}" />
+            </p:column>
+
+            <p:column headerText="Movie">
+                <h:outputText value="#{elem.movie.name}" />
+            </p:column>
+            
+            <p:column headerText="Projection date">
+                <h:outputText value="#{elem.projection.date}" />
+            </p:column>
+            
+            <p:column headerText="Rating">
+                <h:form>
+                    <h:commandLink value="Rate" class="bootstrap-link" rendered="#{userController.checkReservationVal(elem)}"></h:commandLink>
+                </h:form>
+            </p:column>
+        </p:dataTable>
+        
+        <ui:insert name = "header" >
+            <ui:include src = "templates/header.xhtml" />
+        </ui:insert> 
+    </h:body>
+</html>
+
+
+
+

@@ -70,13 +70,21 @@ public class FestivalHelper implements Serializable{
         return festivali;
     }
     
-    public List<FestivalWithProjections> getFestivalsAndProjections(String movieName){
+    public List<FestivalWithProjections> getFestivalsAndProjections(String movieName, Date dateFrom, Date dateTo){
         Session session=null;
         List<FestivalWithProjections> festivali=null;
         Date currDate=new Date();
+        if(dateFrom==null){
+            dateFrom=currDate;
+        }
+        if(dateTo==null){
+            dateTo=currDate;
+        }
         LocationHelper locationHelper=new LocationHelper();
         SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
         String dateStr=sdf.format(currDate);
+        String dateStr1=sdf.format(dateFrom);
+        String dateStr2=sdf.format(dateTo);
         try{
             
             List<Movie> movies=new MovieHelper().getMoviesByName(movieName);
@@ -89,7 +97,7 @@ public class FestivalHelper implements Serializable{
                 session=HibernateUtil.getSessionFactory().getCurrentSession();
                 org.hibernate.Transaction tx= session.beginTransaction();
                 Query q=session.createQuery("select proj from Projection proj, Festival fest, OnFest ofest where proj.idMovie="+next.getIdMovie()+" AND fest.dateTo>='"+dateStr+"' "
-                        + " AND ofest.id.idProjection=proj.idProjection AND ofest.id.idFest=fest.idFest");
+                        + " AND ofest.id.idProjection=proj.idProjection AND ofest.id.idFest=fest.idFest AND fest.dateFrom>='"+dateStr1+"' AND fest.dateTo<='"+dateStr2+"'");
                 projections=(List<Projection>) q.list();
                 tx.commit();
                 

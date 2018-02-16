@@ -33,4 +33,19 @@ public class MovieHelper implements Serializable{
         }
         return movies;
     }
+    
+    public Movie getMovieById(int id){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        Movie movie=null;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("from Movie as movie where movie.idMovie="+id);
+            movie=(Movie) q.uniqueResult();
+            tx.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return movie;
+    }
 }

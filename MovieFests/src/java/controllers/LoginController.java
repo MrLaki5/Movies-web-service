@@ -309,6 +309,11 @@ public class LoginController {
         currPage=2;
         return "indexUnregistered?faces-redirect=true";
     }
+    
+    public String goRegistrationUser(){
+        currPage=2;
+        return "registrationUser?faces-redirect=true";
+    }
 
     //GETHERS AND SETTERS=========
     

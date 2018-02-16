@@ -6,15 +6,19 @@
 package controllers;
 
 import beans.FestivalWithProjections;
+import beans.ReservationWithRating;
 import db.FestivalHelper;
+import db.ReservationHelper;
 import entities.Festival;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -86,6 +90,24 @@ public class UserController {
         this.isTopFive=!this.isTopFive;
     }
     
+    public Date getCurrentDate(){
+        return new Date();
+    }
+    
+    public boolean checkReservationVal(ReservationWithRating elem){
+        if(elem.getFeedback()==null && elem.getProjection().getDate().before(new Date())){
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkBoughtAndDone(ReservationWithRating elem){
+        if(elem.getReservation().getType().equals("Bought") && elem.getProjection().getDate().before(new Date())){
+            return true;
+        }
+        return false;
+    }
+    
     public List<beans.FestivalWithProjections> getFestivals(){
         List<FestivalWithProjections> tempList =null;
         ArrayList<FestivalWithProjections> sendList=new ArrayList<>();
@@ -112,7 +134,7 @@ public class UserController {
             }
         }
         else{
-            tempList=festivalHelper.getFestivalsAndProjections(movieName);
+            tempList=festivalHelper.getFestivalsAndProjections(movieName, dateFrom, dateTo);
         }
         
           
@@ -127,5 +149,12 @@ public class UserController {
             }
             return sendList;
         }
+    }
+    
+    public List<ReservationWithRating> getReservations(){
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        LoginController firstBean = (LoginController) elContext.getELResolver().getValue(elContext, null, "loginController");
+        List<ReservationWithRating> lista=new ReservationHelper().getUserReservations(firstBean.getUesrname());
+        return lista;
     }
 }
