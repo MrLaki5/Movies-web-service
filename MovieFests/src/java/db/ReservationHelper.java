@@ -64,4 +64,21 @@ public class ReservationHelper  implements Serializable{
         return retList;
     }
     
+    public void RemoveReservation(Reservation res){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        org.hibernate.Transaction tx= session.beginTransaction();
+        session.delete(res);
+        session.flush();
+        tx.commit();
+    }
+    
+    public void RateMovie(Feedback feed){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(feed);
+        session.getTransaction().commit();
+    }
+    
 }

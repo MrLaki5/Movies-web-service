@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
         <!-- Bootstrap core CSS -->
@@ -24,9 +25,9 @@
         </ui:insert> 
 
 
-        <p:dataTable var="elem" value="#{userController.reservations}" paginator="true" rows="10">
+        <p:dataTable var="elem" value="#{userController.reservations}" paginator="true" rows="10" id="tableReserv">
             <p:column headerText="Code">
-                <h:outputText style="text-success" value="#{elem.reservation.code}" rendered="#{userController.checkBoughtAndDone(elem)}"/>
+                <h:outputText class="text-success" value="#{elem.reservation.code}" rendered="#{userController.checkBoughtAndDone(elem)}"/>
                 <h:outputText value="#{elem.reservation.code}" rendered="#{!userController.checkBoughtAndDone(elem)}"/>
             </p:column>
             <p:column headerText="Number of cards">
@@ -34,7 +35,15 @@
             </p:column>
 
             <p:column headerText="Status">
-                <h:outputText value="#{elem.reservation.type}" />
+                <h:outputText value="Bought" rendered="#{userController.checkIFBought(elem)}"/>
+                <h:outputText value="Expired" rendered="#{userController.checkIfExpired(elem)}"/>
+                <h:form>
+                    <h:commandLink value="Cancel reservation" class="text-primary" rendered="#{userController.checkCanBeCanceld(elem)}" action="#{userController.cancelRegistration(elem)}" id="cancelLink">
+                        <f:ajax render="tableReserv"/>
+                    </h:commandLink>
+                    
+                    
+                </h:form>
             </p:column>
 
             <p:column headerText="Movie">
@@ -47,7 +56,7 @@
             
             <p:column headerText="Rating">
                 <h:form>
-                    <h:commandLink value="Rate" class="bootstrap-link" rendered="#{userController.checkReservationVal(elem)}"></h:commandLink>
+                    <h:commandLink value="Rate" action="#{userController.goRateMovie(elem)}" class="text-primary" rendered="#{userController.checkReservationVal(elem)}"></h:commandLink>
                 </h:form>
             </p:column>
         </p:dataTable>

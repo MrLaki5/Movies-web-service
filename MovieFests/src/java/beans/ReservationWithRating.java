@@ -9,12 +9,14 @@ import entities.Feedback;
 import entities.Movie;
 import entities.Projection;
 import entities.Reservation;
+import java.io.Serializable;
 
 /**
  *
  * @author milanlazarevic
  */
-public class ReservationWithRating {
+public class ReservationWithRating implements Serializable
+{
     Reservation reservation;
     Feedback feedback;
     Projection projection;

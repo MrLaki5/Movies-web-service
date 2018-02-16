@@ -9,6 +9,7 @@ import beans.FestivalWithProjections;
 import beans.ReservationWithRating;
 import db.FestivalHelper;
 import db.ReservationHelper;
+import entities.Feedback;
 import entities.Festival;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +37,11 @@ public class UserController {
     private String movieName="";
     private boolean isTopFive=true;
     
+    private int movieRate;
+    private String movieComent;
+    private ReservationWithRating currElem;
+    private String rateErr;
+    
     //CONSTRUCTOR===============
     
     public UserController(){
@@ -45,7 +51,77 @@ public class UserController {
         dateTo=calendar.getTime();
     }
     
-    //GETTERS AMD SETTERS
+    //REDIRECT METHODS==========
+    
+    public String goRateMovie(ReservationWithRating elem){
+        currElem=elem;
+        rateErr="";
+        movieRate=0;
+        movieComent="";
+        return "rateMovie?faces-redirect=true";
+    }
+    
+    //LOGICS==================
+    
+    public boolean checkReservationVal(ReservationWithRating elem){
+        if(elem.getFeedback()==null && elem.getProjection().getDate().before(new Date()) && elem.getReservation().getType().equals("Bought")){
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkBoughtAndDone(ReservationWithRating elem){
+        if(elem.getReservation().getType().equals("Bought") && elem.getProjection().getDate().before(new Date())){
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkCanBeCanceld(ReservationWithRating elem){
+        if((elem.getProjection().getDate().after(new Date()) || elem.getProjection().getDate().compareTo(new Date())==0) && elem.getReservation().getType().equals("Reserved")){
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkIfExpired(ReservationWithRating elem){
+        if((elem.getProjection().getDate().before(new Date())) && elem.getReservation().getType().equals("Reserved")){
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkIFBought(ReservationWithRating elem){
+    if(elem.getReservation().getType().equals("Bought")){
+            return true;
+        }
+        return false;
+    }
+    
+    public void cancelRegistration(ReservationWithRating elem){
+        if((elem.getProjection().getDate().after(new Date()) || elem.getProjection().getDate().compareTo(new Date())==0) && elem.getReservation().getType().equals("Reserved")){
+            String username=getUsername();
+            if(username.equals(elem.getReservation().getUsername())){
+                new ReservationHelper().RemoveReservation(elem.getReservation());
+            }
+        }
+    }
+    
+    public String submitRate(){
+        if(movieRate==0 || movieComent.equals("")){
+            rateErr="All fields must be set";
+            return "";
+        }
+        Feedback feed=new Feedback();
+        feed.setComment(movieComent);
+        feed.setRate(movieRate);
+        feed.setIdMovie(currElem.getMovie().getIdMovie());
+        feed.setIdRes(currElem.getReservation().getIdRes());
+        new ReservationHelper().RateMovie(feed);
+        return "registrationUser?faces-redirect=true";
+    }
+    
+    //GETTERS AMD SETTERS===========
 
     public Date getDateFrom() {
         return dateFrom;
@@ -93,21 +169,7 @@ public class UserController {
     public Date getCurrentDate(){
         return new Date();
     }
-    
-    public boolean checkReservationVal(ReservationWithRating elem){
-        if(elem.getFeedback()==null && elem.getProjection().getDate().before(new Date())){
-            return true;
-        }
-        return false;
-    }
-    
-    public boolean checkBoughtAndDone(ReservationWithRating elem){
-        if(elem.getReservation().getType().equals("Bought") && elem.getProjection().getDate().before(new Date())){
-            return true;
-        }
-        return false;
-    }
-    
+
     public List<beans.FestivalWithProjections> getFestivals(){
         List<FestivalWithProjections> tempList =null;
         ArrayList<FestivalWithProjections> sendList=new ArrayList<>();
@@ -150,11 +212,51 @@ public class UserController {
             return sendList;
         }
     }
+
+    public int getMovieRate() {
+        return movieRate;
+    }
+
+    public void setMovieRate(int movieRate) {
+        this.movieRate = movieRate;
+    }
+
+    public String getMovieComent() {
+        return movieComent;
+    }
+
+    public void setMovieComent(String movieComent) {
+        this.movieComent = movieComent;
+    }
+
+    public ReservationWithRating getCurrElem() {
+        return currElem;
+    }
+
+    public void setCurrElem(ReservationWithRating currElem) {
+        this.currElem = currElem;
+    }
+
+    public String getRateErr() {
+        return rateErr;
+    }
+
+    public void setRateErr(String rateErr) {
+        this.rateErr = rateErr;
+    }
+    
+    
     
     public List<ReservationWithRating> getReservations(){
         ELContext elContext = FacesContext.getCurrentInstance().getELContext();
         LoginController firstBean = (LoginController) elContext.getELResolver().getValue(elContext, null, "loginController");
         List<ReservationWithRating> lista=new ReservationHelper().getUserReservations(firstBean.getUesrname());
         return lista;
+    }
+    
+    public String getUsername(){
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        LoginController firstBean = (LoginController) elContext.getELResolver().getValue(elContext, null, "loginController");
+        return firstBean.getUesrname();
     }
 }
