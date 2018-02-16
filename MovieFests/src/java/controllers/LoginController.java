@@ -101,6 +101,10 @@ public class LoginController {
             isLoged=1;
             return goFestivals();
         }
+        if(user.getType().equals("Seller")){
+            isLoged=2;
+            return goRegistrationSeller();
+        }
         return "";
     }
     
@@ -313,6 +317,11 @@ public class LoginController {
     public String goRegistrationUser(){
         currPage=2;
         return "registrationUser?faces-redirect=true";
+    }
+    
+    public String goRegistrationSeller(){
+        currPage=1;
+        return "registrationSeller?faces-redirect=true";
     }
 
     //GETHERS AND SETTERS=========

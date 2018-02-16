@@ -6,13 +6,16 @@
 package db;
 
 import beans.ReservationWithRating;
+import beans.ReservationWithUser;
 import entities.Feedback;
 import entities.Movie;
 import entities.Projection;
 import entities.Reservation;
 import entities.User;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Query;
@@ -79,6 +82,55 @@ public class ReservationHelper  implements Serializable{
         session.beginTransaction();
         session.save(feed);
         session.getTransaction().commit();
+    }
+    
+    public void UpdateReservation(Reservation res){
+        try{
+            
+            res.setStatus("");                                              //THIS SHOULD BE REMOVED AFTER
+            res.setVersion(0);
+            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+            session.update(res);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public List<ReservationWithUser> getAllCurrentReservations(){
+        List<ReservationWithUser> tempList=new ArrayList<>();
+        
+        Date currDate=new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr1=sdf.format(currDate);
+        
+        try{
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            org.hibernate.Transaction tx= session.beginTransaction();
+            
+            Query q=session.createQuery("select reg from Reservation reg, Projection proj where reg.idProjection=proj.idProjection AND proj.date>='"+dateStr1+"' AND "
+                    + " reg.type='Reserved'");
+            List<Reservation> rezervacije=(List<Reservation>) q.list();
+            tx.commit();
+            
+            for (Iterator<Reservation> iterator = rezervacije.iterator(); iterator.hasNext();) {
+                Reservation next = iterator.next();
+                
+                User user=new UserHelper().getUserById(next.getUsername());
+                
+                tempList.add(new ReservationWithUser(next, user));               
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return tempList;
     }
     
 }
