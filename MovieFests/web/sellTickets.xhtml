@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <h:head>
         <!-- Bootstrap core CSS -->
@@ -18,38 +19,46 @@
     </h:head>
 
     <h:body>  
+        <c:choose>
+            <c:when test="#{loginController.isLoged==2}">
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
 
-        <ui:insert name = "header" >
-            <ui:include src = "templates/header.xhtml" />
-        </ui:insert> 
+                <h:form id="form_content">
+                    <div class="container-fluid">
 
-        <h:form id="form_content">
-            <div class="container-fluid">
+                        <div clas="row" style="height: 30px">               
+                        </div>
+                        <div class="row"><div class="col-md-12 text-center"><h1 class="h3 mb-3 font-weight-normal">Sell #{sellerController.currElem.reservation.ticketNum} tickets</h1></div></div>
 
-                <div clas="row" style="height: 30px">               
-                </div>
-                <div class="row"><div class="col-md-12 text-center"><h1 class="h3 mb-3 font-weight-normal">Sell #{sellerController.currElem.reservation.ticketNum} tickets</h1></div></div>
+                    </div>
 
-            </div>
-
-            <div class="row">
-                <div class="offset-md-4 col-md-4" align="center">
-                    Code: #{sellerController.currElem.reservation.code}
-                    <br/>
-                    First name: #{sellerController.currElem.user.firstname}
-                    <br/>
-                    Last name: #{sellerController.currElem.user.lastname}
-                    <br/>
-                    <br/>
-                    <h:commandButton class="btn btn-lg btn-primary" action="#{sellerController.buyTickets()}" value="Sell"/>
-                </div>
-            </div>
-        </h:form>
+                    <div class="row">
+                        <div class="offset-md-4 col-md-4" align="center">
+                            Code: #{sellerController.currElem.reservation.code}
+                            <br/>
+                            First name: #{sellerController.currElem.user.firstname}
+                            <br/>
+                            Last name: #{sellerController.currElem.user.lastname}
+                            <br/>
+                            <br/>
+                            <h:commandButton class="btn btn-lg btn-primary" action="#{sellerController.buyTickets()}" value="Sell"/>
+                        </div>
+                    </div>
+                </h:form>
         
 
-        <ui:insert name = "header" >
-            <ui:include src = "templates/header.xhtml" />
-        </ui:insert>
+                <ui:insert name = "foother" >
+                    <ui:include src = "templates/foother.xhtml" />
+                </ui:insert> 
+            </c:when>
+            <c:otherwise>
+             <ui:insert name = "header" >
+                 <ui:include src = "templates/error.xhtml" />
+             </ui:insert> 
+             </c:otherwise>
+         </c:choose>  
     </h:body>
 </html>
 

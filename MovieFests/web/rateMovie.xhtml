@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <h:head>
         <!-- Bootstrap core CSS -->
@@ -19,39 +20,53 @@
 
     <h:body>  
 
-        <ui:insert name = "header" >
-            <ui:include src = "templates/header.xhtml" />
-        </ui:insert> 
+        <c:choose>
+            <c:when test="#{loginController.isLoged==1}">
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
 
-        <h:form id="form_content">
-            <div class="container-fluid">
+                <h:form id="form_content">
+                    <div class="container-fluid">
 
-                <div clas="row" style="height: 30px">               
-                </div>
-                <div class="row"><div class="col-md-12 text-center"><h1 class="h3 mb-3 font-weight-normal">Rate #{userController.currElem.movie.name}:</h1></div></div>
+                        <div clas="row" style="height: 30px">               
+                        </div>
+                        <div class="row"><div class="col-md-12 text-center"><h1 class="h3 mb-3 font-weight-normal">Rate #{userController.currElem.movie.name}:</h1></div></div>
 
-            </div>
+                    </div>
 
-            <div class="row">
-                <div class="offset-md-4 col-md-4" align="center">
-                    <p:rating value="#{userController.movieRate}" stars="10"/>
-                    <br/>
-                    <p:inputTextarea rows="10" cols="40" value="#{userController.movieComent}" maxlength="100"/>
-                    <br/>
-                    <h:outputText class="text-danger" value="#{userController.rateErr}" id="errorMessage"/>
-                    <br/>
-                    <br/>
-                    <h:commandButton class="btn btn-lg btn-primary" action="#{userController.submitRate()}" value="Rate">
-                        <f:ajax execute="form_content" render="errorMessage"/>
-                    </h:commandButton>
-                </div>
-            </div>
-        </h:form>
+                    <div class="row">
+                        <div class="offset-md-4 col-md-4" align="center">
+                            <p:rating value="#{userController.movieRate}" stars="10"/>
+                            <br/>
+                            <p:inputTextarea rows="10" cols="40" value="#{userController.movieComent}" maxlength="100"/>
+                            <br/>
+                            <h:outputText class="text-danger" value="#{userController.rateErr}" id="errorMessage"/>
+                            <br/>
+                            <br/>
+                            <h:commandButton class="btn btn-lg btn-primary" action="#{userController.submitRate()}" value="Rate">
+                                <f:ajax execute="form_content" render="errorMessage"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </h:form>
+
+
+
+                <ui:insert name = "foother" >
+                   <ui:include src = "templates/foother.xhtml" />
+                </ui:insert>  
+            </c:when>
+            <c:otherwise>
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/error.xhtml" />
+                </ui:insert> 
+            </c:otherwise>
+        </c:choose>
         
-        
-        
-        <ui:insert name = "header" >
-            <ui:include src = "templates/header.xhtml" />
-        </ui:insert> 
     </h:body>
 </html>
+
+
+
+

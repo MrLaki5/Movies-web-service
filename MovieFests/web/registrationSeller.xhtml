@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <h:head>
         <!-- Bootstrap core CSS -->
@@ -19,76 +20,95 @@
 
     <h:body>  
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12 text-center" style="height: 100px">
-                    <br/>
-                    <h1 class="h3 mb-3 font-weight-normal">Registrations</h1>
-                </div>
-            </div>
-            <h:form id="form_content">
-            <div class="row">               
-                    <div class="offset-md-2 col-md-2">
-                        <h:panelGrid columns="1">
-                            <p:outputLabel value="First name: "/>
-                            <p:inputText id="nameLabel1" value="#{sellerController.FName}"/>
-                        </h:panelGrid>
-                    </div>
-                    <div class="col-md-2">
-                        <p:outputLabel value="Last name: " />
-                        <br/>
-                        <p:inputText id="nameLabel2" value="#{sellerController.LName}"/>
-                    </div>
-                    <div class="col-md-2">
-                        <p:outputLabel value="Code: " />
-                        <br/>
-                        <p:inputText id="nameLabel3" value="#{sellerController.codeF}"/>
-                    </div>
-                    <div class="col-md-2">
-                        <p:outputLabel value="    " />
-                        <h:commandButton class="btn btn-lg btn-primary btn-block" value="Search" id="srchBut">
-                            <f:ajax execute="form_content" render="tableFest form_content"/>
-                        </h:commandButton>
-                    </div>
-            </div>
-            </h:form>
-            <div class="row"><div class="col-md-12" style="height: 20px"></div></div>
-            <div class="row">
-                <div class=" offset-md-2 col-md-8">
-                    <p:dataTable var="elem" value="#{sellerController.currReservations}" id="tableFest" paginator="true" rows="10">
-                        <p:column headerText="Code">
-                            <h:outputText value="#{elem.reservation.code}" />
-                        </p:column>
+        <c:choose>
+            <c:when test="#{loginController.isLoged==2}">
 
-                        <p:column headerText="First name">
-                            <h:outputText value="#{elem.user.firstname}" />
-                        </p:column>
+                <ui:insert name = "header" >
+                   <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
+                
+                
+                    <div class="container-fluid">
+                   <div class="row">
+                       <div class="col-md-12 text-center" style="height: 100px">
+                           <br/>
+                           <h1 class="h3 mb-3 font-weight-normal">Registrations</h1>
+                       </div>
+                   </div>
+                   <h:form id="form_content">
+                   <div class="row">               
+                           <div class="offset-md-2 col-md-2">
+                               <h:panelGrid columns="1">
+                                   <p:outputLabel value="First name: "/>
+                                   <p:inputText id="nameLabel1" value="#{sellerController.FName}"/>
+                               </h:panelGrid>
+                           </div>
+                           <div class="col-md-2">
+                               <p:outputLabel value="Last name: " />
+                               <br/>
+                               <p:inputText id="nameLabel2" value="#{sellerController.LName}"/>
+                           </div>
+                           <div class="col-md-2">
+                               <p:outputLabel value="Code: " />
+                               <br/>
+                               <p:inputText id="nameLabel3" value="#{sellerController.codeF}"/>
+                           </div>
+                           <div class="col-md-2">
+                               <p:outputLabel value="    " />
+                               <h:commandButton class="btn btn-lg btn-primary btn-block" value="Search" id="srchBut">
+                                   <f:ajax execute="form_content" render="tableFest form_content"/>
+                               </h:commandButton>
+                           </div>
+                   </div>
+                   </h:form>
+                   <div class="row"><div class="col-md-12" style="height: 20px"></div></div>
+                   <div class="row">
+                       <div class=" offset-md-2 col-md-8">
+                           <p:dataTable var="elem" value="#{sellerController.currReservations}" id="tableFest" paginator="true" rows="10">
+                               <p:column headerText="Code">
+                                   <h:outputText value="#{elem.reservation.code}" />
+                               </p:column>
 
-                        <p:column headerText="Last name">
-                            <h:outputText value="#{elem.user.lastname}" />
-                        </p:column>
-                        
-                        <p:column headerText="Ticekt number">
-                            <h:outputText value="#{elem.reservation.ticketNum}" />
-                        </p:column>
-                        
-                        <p:column headerText="Date">
-                            <h:outputText value="#{elem.reservation.date}" />
-                        </p:column>
-                        
-                        <p:column headerText="Approve">
-                            <h:form>           
-                                <p:commandButton value="Approve" action="#{sellerController.goSellTickets(elem)}"></p:commandButton>
-                            </h:form>
-                        </p:column>
-                    </p:dataTable>
-                </div>
-            </div>
-            
-        </div>
+                               <p:column headerText="First name">
+                                   <h:outputText value="#{elem.user.firstname}" />
+                               </p:column>
 
-        <ui:insert name = "header" >
-            <ui:include src = "templates/header.xhtml" />
-        </ui:insert> 
+                               <p:column headerText="Last name">
+                                   <h:outputText value="#{elem.user.lastname}" />
+                               </p:column>
+
+                               <p:column headerText="Ticekt number">
+                                   <h:outputText value="#{elem.reservation.ticketNum}" />
+                               </p:column>
+
+                               <p:column headerText="Date">
+                                   <h:outputText value="#{elem.reservation.date}" />
+                               </p:column>
+
+                               <p:column headerText="Approve">
+                                   <h:form>           
+                                       <p:commandButton value="Approve" action="#{sellerController.goSellTickets(elem)}"></p:commandButton>
+                                   </h:form>
+                               </p:column>
+                           </p:dataTable>
+                       </div>
+                   </div>
+
+               </div>
+
+                <ui:insert name = "foother" >
+                   <ui:include src = "templates/foother.xhtml" />
+                </ui:insert> 
+            </c:when>
+            <c:otherwise>
+             <ui:insert name = "header" >
+                 <ui:include src = "templates/error.xhtml" />
+             </ui:insert> 
+         </c:otherwise>
+     </c:choose>   
+
     </h:body>
 </html>
+
+
+    
