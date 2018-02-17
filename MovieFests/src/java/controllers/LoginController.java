@@ -337,6 +337,11 @@ public class LoginController {
         currPage=2;
         return "projectionSeller?faces-redirect=true";
     }
+    
+    public String goFestivalBrowsing(){
+        currPage=2;
+        return  "festivalBrowsing?faces-redirect=true";
+    }
 
     //GETHERS AND SETTERS=========
     
@@ -522,7 +527,7 @@ public class LoginController {
         }
         else{
             for(int i=0; i<tempList.size();i++){
-                if(festivalName.contains(tempList.get(i).getName())){
+                if(tempList.get(i).getName().contains(festivalName)){
                     sendList.add(tempList.get(i));
                 }
             }

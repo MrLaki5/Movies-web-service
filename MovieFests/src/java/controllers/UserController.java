@@ -205,7 +205,7 @@ public class UserController {
         }
         else{
             for(int i=0; i<tempList.size();i++){
-                if(tempList.get(i).getFestival().getName().equals(festivalName)){
+                if(tempList.get(i).getFestival().getName().contains(festivalName)){
                     sendList.add(tempList.get(i));
                 }
             }

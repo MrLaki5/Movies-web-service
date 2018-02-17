@@ -5,8 +5,11 @@
  */
 package controllers;
 
+import db.FestivalHelper;
 import db.UserHelper;
+import entities.Festival;
 import entities.User;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,10 +25,52 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class AdminController {
+
+    public class LocElem{
+        private String location;
+        private String building;
+
+        public LocElem(String location, String building) {
+            this.location = location;
+            this.building = building;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public String getBuilding() {
+            return building;
+        }
+
+        public void setBuilding(String building) {
+            this.building = building;
+        }
+        
+        
+    }
     
-    String newType="";
-    Map<String, String> nameMap=new HashMap<>();;
-    int tempFlag=0;
+    private Map<String, String> nameMap=new HashMap<>();;
+    private int tempFlag=0;
+    
+    private String FestivalName="";
+    private String LocationName="";
+    private String BuildingName="";
+    private List<LocElem> locations=null;
+    
+    //REDIRECT
+    
+    public String goNewFestival(){
+        FestivalName="";
+        LocationName="";
+        BuildingName="";
+        locations=new ArrayList<>();
+        return "newFestival?faces-redirect=true";
+    }
     
     //LOGICS
     
@@ -34,14 +79,56 @@ public class AdminController {
         tempFlag=0;
     }
     
+    public void addLocation(){
+        if(LocationName.equals("") || BuildingName.equals("")){
+            return;
+        }
+        for (LocElem location : locations) {
+            if(location.building.equals(BuildingName) && location.location.equals(LocationName)){
+                BuildingName="";
+                return;
+            }
+        }
+        locations.add(new LocElem(LocationName, BuildingName));
+        BuildingName="";
+    }
+    
+    public void removeLocation(LocElem temp){
+        locations.remove(temp);
+    }
+    
     //GETTERS AND SETTERS
 
-    public String getNewType() {
-        return newType;
+    public String getFestivalName() {
+        return FestivalName;
     }
 
-    public void setNewType(String newType) {
-        this.newType = newType;
+    public void setFestivalName(String FestivalName) {
+        this.FestivalName = FestivalName;
+    }
+
+    public List<LocElem> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<LocElem> locations) {
+        this.locations = locations;
+    }
+
+    public String getLocationName() {
+        return LocationName;
+    }
+
+    public void setLocationName(String LocationName) {
+        this.LocationName = LocationName;
+    }
+
+    public String getBuildingName() {
+        return BuildingName;
+    }
+
+    public void setBuildingName(String BuildingName) {
+        this.BuildingName = BuildingName;
     }
     
     public List<User> getUnconfirmedUsers(){
@@ -63,5 +150,23 @@ public class AdminController {
         String []niz=typeS.split(" ");
         nameMap.replace(niz[1], niz[0]);
         tempFlag=1;
-    }   
+    }
+    
+    public List<Festival> getAllfestivals(){
+        List<Festival> tempList=new FestivalHelper().getAllFestivals();
+        List<Festival> sendList=new ArrayList<Festival>();
+        if(FestivalName.equals("")){
+            return tempList;
+        }
+        else{
+            for(int i=0; i<tempList.size();i++){
+                if(tempList.get(i).getName().contains(FestivalName)){
+                    sendList.add(tempList.get(i));
+                }
+            }
+            return sendList;
+        }             
+    }
+    
+    
 }

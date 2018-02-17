@@ -52,6 +52,21 @@ public class FestivalHelper implements Serializable{
         return festivali;
     }
     
+    public List<Festival> getAllFestivals(){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        List<Festival> festivali=null;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("from Festival as fest");
+            festivali=(List<Festival>) q.list();
+            tx.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return festivali;
+    }
+    
     public List<Festival> getMostRecent(){
         Session session=null;
         session=HibernateUtil.getSessionFactory().getCurrentSession();
