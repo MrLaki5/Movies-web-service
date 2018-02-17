@@ -5,11 +5,17 @@
  */
 package controllers;
 
+import beans.MovieEnc;
 import db.FestivalHelper;
+import db.MovieHelper;
 import db.UserHelper;
 import entities.Festival;
+import entities.Movie;
 import entities.User;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,8 +55,58 @@ public class AdminController {
 
         public void setBuilding(String building) {
             this.building = building;
-        }
+        }   
         
+        @Override
+        public String toString(){
+            return location+"_"+building;
+        }
+    }
+    
+    public class ProjElem{
+        private MovieEnc movie;
+        private LocElem location;
+        private int price;
+        private Date time;
+
+        public ProjElem(MovieEnc movie, LocElem location, int price, Date time) {
+            this.movie = movie;
+            this.location = location;
+            this.price = price;
+            this.time = time;
+        }
+
+        public MovieEnc getMovie() {
+            return movie;
+        }
+
+        public void setMovie(MovieEnc movie) {
+            this.movie = movie;
+        }
+
+        public LocElem getLocation() {
+            return location;
+        }
+
+        public void setLocation(LocElem location) {
+            this.location = location;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public void setPrice(int price) {
+            this.price = price;
+        }
+
+        public Date getTime() {
+            return time;
+        }
+
+        public void setTime(Date time) {
+            this.time = time;
+        }
         
     }
     
@@ -60,7 +116,19 @@ public class AdminController {
     private String FestivalName="";
     private String LocationName="";
     private String BuildingName="";
+    private String FestInfo="";
+    private Date StartDate=null;
+    private Date EndDate=null;
+    private String FirstStepError="";
     private List<LocElem> locations=null;
+    private int TicketNum;
+    
+    private String MovieForProjection;
+    private String tempLock;
+    private int Price;
+    private Date timeDate;
+    private List<ProjElem> projections;
+    private String SecondStepError="";
     
     //REDIRECT
     
@@ -68,7 +136,24 @@ public class AdminController {
         FestivalName="";
         LocationName="";
         BuildingName="";
+        FestInfo="";
+        FirstStepError="";
+        Price=0;
+        TicketNum=0;
+        StartDate=null;
+        EndDate=null;
+        MovieForProjection="";
+        tempLock="";
+        timeDate=null;
+        SecondStepError="";
         locations=new ArrayList<>();
+        projections=new ArrayList<>();
+        return "newFestival?faces-redirect=true";
+    }
+    
+    public String goNewFestivalBack(){
+        SecondStepError="";
+        FirstStepError="";
         return "newFestival?faces-redirect=true";
     }
     
@@ -93,8 +178,82 @@ public class AdminController {
         BuildingName="";
     }
     
+    public void addProjection(){
+        LocElem tLock=null;
+        for (LocElem location : locations) {
+            if(location.toString().equals(tempLock)){
+                tLock=location;
+                break;
+            }
+        }
+        if(MovieForProjection.isEmpty() || tLock==null){
+            SecondStepError="All fields must be set";
+            return;
+        }
+        int idMovie=Integer.parseInt(MovieForProjection);
+        Movie movie=new MovieHelper().getMovieById(idMovie);
+        if(movie==null || Price==0){
+            SecondStepError="All fields must be set";
+            return;
+        }
+        if(timeDate.before(StartDate) || timeDate.after(EndDate)){
+            SecondStepError="Time of projection is not during time of festival";
+            return;
+        }
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(timeDate);
+        calendar.add(Calendar.MINUTE, movie.getLength());
+        Date projectionEnd = calendar.getTime();
+        for (ProjElem projection : projections) {         
+            if(tempLock.equals(projection.getLocation().toString())){           
+                calendar.setTime(projection.getTime());
+                calendar.add(Calendar.MINUTE, projection.getMovie().getMovie().getLength());
+                Date projectionEnd2=calendar.getTime();
+                
+                if(projection.getTime().after(timeDate) && projection.getTime().before(projectionEnd)){
+                    SecondStepError="Times crossed with another projection";
+                    return;
+                }
+                if(projectionEnd2.after(timeDate) && projectionEnd2.before(projectionEnd)){
+                    SecondStepError="Times crossed with another projection";
+                    return;
+                }
+            }
+        }
+        projections.add(new ProjElem(new MovieEnc(movie), tLock, Price, timeDate));
+        MovieForProjection="";
+        tempLock="";
+        Price=0;
+        timeDate=null;
+    }
+    
     public void removeLocation(LocElem temp){
         locations.remove(temp);
+    }
+    
+    public void removeProjection(ProjElem temp){
+        projections.remove(temp);
+    }
+    
+    public String firstStepFestAdd(){
+        if(FestInfo.isEmpty() || FestivalName.isEmpty() || locations.isEmpty() || StartDate==null || EndDate==null || TicketNum==0){
+            FirstStepError="All fields must be set";
+            return "";
+        }
+        if(StartDate.after(EndDate)){
+            FirstStepError="Start date set after the end";
+            return "";
+        }
+        return "newFestival2?faces-redirect=true";
+    }
+    
+    public String secondStepAdd(){
+        if(projections.isEmpty()){
+            SecondStepError="There must be projections";
+            return "";
+        }
+        SecondStepError="";
+        return "newFestival3?faces-redirect=true";
     }
     
     //GETTERS AND SETTERS
@@ -129,6 +288,94 @@ public class AdminController {
 
     public void setBuildingName(String BuildingName) {
         this.BuildingName = BuildingName;
+    }
+
+    public Date getStartDate() {
+        return StartDate;
+    }
+
+    public void setStartDate(Date StartDate) {
+        this.StartDate = StartDate;
+    }
+
+    public Date getEndDate() {
+        return EndDate;
+    }
+
+    public void setEndDate(Date EndDate) {
+        this.EndDate = EndDate;
+    }
+
+    public String getFestInfo() {
+        return FestInfo;
+    }
+
+    public void setFestInfo(String FestInfo) {
+        this.FestInfo = FestInfo;
+    }
+
+    public String getFirstStepError() {
+        return FirstStepError;
+    }
+
+    public void setFirstStepError(String FirstStepError) {
+        this.FirstStepError = FirstStepError;
+    }
+
+    public String getMovieForProjection() {
+        return MovieForProjection;
+    }
+
+    public void setMovieForProjection(String MovieForProjection) {
+        this.MovieForProjection= MovieForProjection;
+    }
+
+    public String getTempLock() {
+        return tempLock;
+    }
+
+    public void setTempLock(String tempLock) {
+        this.tempLock = tempLock;
+    }
+
+    public int getTicketNum() {
+        return TicketNum;
+    }
+
+    public void setTicketNum(int TicketNum) {
+        this.TicketNum = TicketNum;
+    }
+
+    public int getPrice() {
+        return Price;
+    }
+
+    public void setPrice(int Price) {
+        this.Price = Price;
+    }
+
+    public Date getTimeDate() {
+        return timeDate;
+    }
+
+    public void setTimeDate(Date timeDate) {
+        this.timeDate = timeDate;
+    }
+
+    public List<ProjElem> getProjections() {
+        return projections;
+    }
+
+    public void setProjections(List<ProjElem> projections) {
+        this.projections = projections;
+    }
+
+    public String getSecondStepError() {
+        return SecondStepError;
+    }
+
+    public void setSecondStepError(String SecondStepError) {
+        this.SecondStepError = SecondStepError;
     }
     
     public List<User> getUnconfirmedUsers(){
@@ -168,5 +415,17 @@ public class AdminController {
         }             
     }
     
+    public List<MovieEnc> getAllMovies(){
+        List<Movie> tempList=new MovieHelper().getAllMovies();
+        List<MovieEnc> retList=new ArrayList<>();
+        for (Movie movie : tempList) {
+            retList.add(new MovieEnc(movie));
+        }
+        return retList;
+    }
     
+    public String formatDate(Date date){
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        return sdf.format(date);
+    }
 }
