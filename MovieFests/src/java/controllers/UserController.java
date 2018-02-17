@@ -102,7 +102,7 @@ public class UserController {
         if((elem.getProjection().getDate().after(new Date()) || elem.getProjection().getDate().compareTo(new Date())==0) && elem.getReservation().getType().equals("Reserved")){
             String username=getUsername();
             if(username.equals(elem.getReservation().getUsername())){
-                new ReservationHelper().RemoveReservation(elem.getReservation());
+                new ReservationHelper().RemoveReservation(elem.getReservation().getIdRes());
             }
         }
     }

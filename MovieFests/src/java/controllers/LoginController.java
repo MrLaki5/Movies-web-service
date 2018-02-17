@@ -323,6 +323,11 @@ public class LoginController {
         currPage=1;
         return "registrationSeller?faces-redirect=true";
     }
+    
+    public String goProjectionSeller(){
+        currPage=2;
+        return "projectionSeller?faces-redirect=true";
+    }
 
     //GETHERS AND SETTERS=========
     

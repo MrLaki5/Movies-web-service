@@ -5,7 +5,9 @@
  */
 package controllers;
 
+import beans.ProjectionWithMovie;
 import beans.ReservationWithUser;
+import db.ProjectionHelper;
 import db.ReservationHelper;
 import entities.Reservation;
 import java.io.Serializable;
@@ -32,7 +34,18 @@ public class SellerController implements Serializable{
     
     private ReservationWithUser currElem;
     
+    private int ticketNum=0;
+    private ProjectionWithMovie currProj;
+    
     //REDIRECT METHODS
+    
+    public String goCashSellTickets(ProjectionWithMovie elem){
+        if(ticketNum==0){
+            return "";
+        }
+        currProj=elem;
+        return "sellCashierTickets?faces-redirect=true";
+    }
     
     public String goSellTickets(ReservationWithUser elem){
         currElem=elem;
@@ -42,9 +55,13 @@ public class SellerController implements Serializable{
     //LOGIC METHODS
     
     public String buyTickets(){
-        currElem.getReservation().setType("Bought");
-        new ReservationHelper().UpdateReservation(currElem.getReservation());
+        new ReservationHelper().UpdateReservationType(currElem.getReservation().getIdRes(), "Bought");
         return "registrationSeller?faces-redirect=true";
+    }
+    
+    public String buyTicketsCashier(){
+        ticketNum=0;
+        return "projectionSeller?faces-redirect=true";
     }
     
     //GETTER AND SETTERS
@@ -80,8 +97,27 @@ public class SellerController implements Serializable{
     public void setCurrElem(ReservationWithUser currElem) {
         this.currElem = currElem;
     }
+
+    public int getTicketNum() {
+        return ticketNum;
+    }
+
+    public void setTicketNum(int ticketNum) {
+        this.ticketNum = ticketNum;
+    }
+
+    public ProjectionWithMovie getCurrProj() {
+        return currProj;
+    }
+
+    public void setCurrProj(ProjectionWithMovie currProj) {
+        this.currProj = currProj;
+    }
     
-    
+    public List<ProjectionWithMovie> getCurrProjections(){
+        List<ProjectionWithMovie> tempList=new ProjectionHelper().getAllCurrProjectionsWMovie();
+        return tempList;
+    }
     
     public List<ReservationWithUser> getCurrReservations(){
         List<ReservationWithUser> tempList=null;

@@ -67,13 +67,20 @@ public class ReservationHelper  implements Serializable{
         return retList;
     }
     
-    public void RemoveReservation(Reservation res){
-        Session session=null;
-        session=HibernateUtil.getSessionFactory().getCurrentSession();
-        org.hibernate.Transaction tx= session.beginTransaction();
-        session.delete(res);
-        session.flush();
-        tx.commit();
+    public void RemoveReservation(Integer idRes){
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Reservation as res where res.idRes="+idRes);
+            Reservation rezervacija=(Reservation) q.uniqueResult();
+            session.delete(rezervacija);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
     public void RateMovie(Feedback feed){
@@ -84,16 +91,16 @@ public class ReservationHelper  implements Serializable{
         session.getTransaction().commit();
     }
     
-    public void UpdateReservation(Reservation res){
-        try{
-            
-            res.setStatus("");                                              //THIS SHOULD BE REMOVED AFTER
-            res.setVersion(0);
-            
+    public void UpdateReservationType(Integer idRes, String newType){
+        try{            
             Session session=null;
             session=HibernateUtil.getSessionFactory().getCurrentSession();
             session.beginTransaction();          
-            session.update(res);
+           
+            Query q=session.createQuery("from Reservation as res where res.idRes="+idRes);
+            Reservation rezervacija=(Reservation) q.uniqueResult();
+            rezervacija.setType(newType);
+            session.saveOrUpdate(rezervacija);
             session.getTransaction().commit();
         }
         catch(Exception e){
