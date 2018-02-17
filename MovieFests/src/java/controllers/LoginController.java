@@ -105,6 +105,10 @@ public class LoginController {
             isLoged=2;
             return goRegistrationSeller();
         }
+        if(user.getType().equals("Admin")){
+            isLoged=3;
+            return goRegConfirmations();
+        }
         return "";
     }
     
@@ -289,6 +293,11 @@ public class LoginController {
     }
     
     //REDIRECT METHODS============
+    
+    public String goRegConfirmations(){
+        currPage=1;
+        return "registerConfirmations?faces-redirect=true";
+    }
     
     public String goRegister(){
         currPage=1;

@@ -144,6 +144,30 @@
                                 </c:when>
                             </c:choose>
                             
+                            <c:choose>
+                                <c:when test="#{loginController.isLoged==3}">
+                                    
+                                    <c:choose>                                
+                                        <c:when test="#{loginController.currPage==1}">
+                                            <li class="nav-item active">
+                                                <h:form class="nav-item active">
+                                                    <h:commandLink action="#{loginController.goRegConfirmations()}" class="nav-link">Confirmations</h:commandLink>
+                                                </h:form>
+
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="nav-item">
+                                                <h:form class="nav-item">
+                                                    <h:commandLink action="#{loginController.goRegConfirmations()}" class="nav-link">Confirmations</h:commandLink>
+                                                </h:form> 
+                                            </li>
+                                        </c:otherwise>                                
+                                    </c:choose>
+                                    
+                                </c:when>
+                            </c:choose>
+                            
                         </c:otherwise>
                     </c:choose>
 

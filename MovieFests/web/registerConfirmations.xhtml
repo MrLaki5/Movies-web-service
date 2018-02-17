@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <!-- Bootstrap core CSS -->
+        <link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <!-- Custom styles for this template -->
+        <link href="resources/css/modern-business.css" rel="stylesheet"/>
+
+        <title>Movie Fests</title>
+
+    </h:head>
+
+    <h:body>  
+
+        <c:choose>
+            <c:when test="#{loginController.isLoged==3}">
+                
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
+
+                
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 text-center" style="height: 100px">
+                            <br/>
+                            <h1 class="h3 mb-3 font-weight-normal">Unconfirmed users</h1>
+                        </div>
+                    </div>
+                    <h:form id="form_content">
+                    
+                    
+                    <div class="row"><div class="col-md-12" style="height: 20px"></div></div>
+                    <div class="row">
+                        <div class=" offset-md-1 col-md-10">
+                            <p:dataTable var="elem" value="#{adminController.unconfirmedUsers}" id="tableFest" paginator="true" rows="5">
+                                <p:column headerText="Username">
+                                    <h:outputText value="#{elem.username}" />
+                                </p:column>
+
+                                <p:column headerText="Email">
+                                    <h:outputText value="#{elem.email}" />
+                                </p:column>
+
+                                <p:column headerText="First name">
+                                    <h:outputText value="#{elem.firstname}" />
+                                </p:column>
+                                
+                                <p:column headerText="Last name">
+                                    <h:outputText value="#{elem.lastname}" />
+                                </p:column>
+                                
+                                <p:column headerText="Type">
+                                    <p:selectOneListbox value="#{adminController.userType}">
+                                        <f:selectItem itemLabel="No type" itemValue="NoType #{elem.username}" />
+                                        <f:selectItem itemLabel="User" itemValue="User #{elem.username}" />
+                                        <f:selectItem itemLabel="Seller" itemValue="Seller #{elem.username}" />
+                                        <f:selectItem itemLabel="Admin" itemValue="Admin #{elem.username}"/>
+                                    </p:selectOneListbox> 
+                                </p:column>
+                                
+                                <p:column headerText="Confirm">
+                                    <h:commandButton class="btn btn-lg btn-primary btn-block" value="Confirm" action="#{adminController.updateUser(elem)}">
+                                        <f:ajax execute="form_content" render="form_content"/>
+                                    </h:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                    </h:form>
+                </div>
+                
+
+                <ui:insert name = "foother" >
+                    <ui:include src = "templates/foother.xhtml" />
+                </ui:insert> 
+                
+            </c:when>
+            <c:otherwise>
+                <ui:insert name="header">
+                    <ui:include src="templates/error.xhtml"/>
+                </ui:insert>
+            </c:otherwise>
+        </c:choose>
+    </h:body>
+</html>
