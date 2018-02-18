@@ -192,10 +192,11 @@ public class AdminController {
     
     private String MovieNewName="";
     private UploadedFile file=null;
+    private UploadedFile ImageFile=null;
     private String ErrorMovie="";
     private int MovieYear=0;
     private List<String> actors=null;
-    private List<String> images=null;
+    private List<UploadedFile> images=null;
     private String ActorName="";
     
     //REDIRECT
@@ -255,6 +256,7 @@ public class AdminController {
         LoginController firstBean = (LoginController) elContext.getELResolver().getValue(elContext, null, "loginController");
         firstBean.setCurrPage(3);
         actors=new ArrayList<>();
+        images=new ArrayList<>();
         newMovie=new Movie();
         newMovie.setDirector("");
         newMovie.setCountry("");
@@ -265,6 +267,7 @@ public class AdminController {
         newMovie.setLength(0);
         ActorName="";
         file=null;
+        ImageFile=null;
         ErrorMovie="";
         MovieYear=0;
         MovieNewName="";
@@ -274,6 +277,7 @@ public class AdminController {
     public String goNewMovieFromFest(){
         rootB=1;
         actors=new ArrayList<>();
+        images=new ArrayList<>();
         newMovie=new Movie();
         newMovie=new Movie();
         newMovie.setDirector("");
@@ -285,6 +289,7 @@ public class AdminController {
         newMovie.setLength(0);
         ActorName="";
         file=null;
+        ImageFile=null;
         MovieYear=0;
         ErrorMovie="";
         MovieNewName="";
@@ -292,6 +297,28 @@ public class AdminController {
     }
     
     //LOGICS
+    
+    public void addImageForGalerry(){
+        if(ImageFile.getFileName().equals("")){
+            return;
+        }
+        for (int i=0; i<images.size(); i++) {
+            if(images.get(i).getFileName().equals(ImageFile.getFileName())){
+                return;
+            }
+        }
+        images.add(ImageFile);
+        ImageFile=null;
+    }
+    
+    public void removeImageForGallery(String image){
+        for (int i=0; i<images.size(); i++) {
+            if(images.get(i).getFileName().equals(image)){
+                images.remove(i);
+                return;
+            }
+        }
+    }
     
     public void addActor(){
         if(ActorName.equals("")){
@@ -573,6 +600,22 @@ public class AdminController {
     }
     
     //GETTERS AND SETTERS
+
+    public UploadedFile getImageFile() {
+        return ImageFile;
+    }
+
+    public void setImageFile(UploadedFile ImageFile) {
+        this.ImageFile = ImageFile;
+    }
+    
+    public List<UploadedFile> getImages() {
+        return images;
+    }
+
+    public void setImages(List<UploadedFile> images) {
+        this.images = images;
+    }
 
     public String getActorName() {
         return ActorName;

@@ -79,8 +79,8 @@
                             <div class="col-md-4">
                                 <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
                                     <p:outputLabel for="imageName" value="Image:"/>
-                                    <p:inputText id="imageName" value="#{adminController.actorName}"/>
-                                    <h:commandLink value="Add actor" class="text-primary" action="#{adminController.addActor()}" id="imageLink">
+                                    <p:fileUpload value="#{adminController.imageFile}" mode="simple" id="imageName"/> 
+                                    <h:commandLink value="Add image" class="text-primary" action="#{adminController.addImageForGalerry()}" id="imageLink">
                                         <f:ajax render="cont_form" execute="cont_form"/>
                                     </h:commandLink>
                                 </h:panelGrid>
@@ -99,12 +99,12 @@
                                 </p:dataList>
                             </div>
                             <div class="col-md-4">
-                                <p:dataList value="#{adminController.actors}" var="elem" type="ordered" paginator="true" rows="5">
+                                <p:dataList value="#{adminController.images}" var="elem" type="ordered" paginator="true" rows="5">
                                     <f:facet name="header">
                                         Gallery                                
                                     </f:facet>
-                                    #{elem}
-                                    <h:commandLink value="Remove" class="text-primary" action="#{adminController.removeActor(elem)}" id="imageRemove">
+                                    #{elem.fileName}
+                                    <h:commandLink value="Remove" class="text-primary" action="#{adminController.removeImageForGallery(elem.fileName)}" id="imageRemove">
                                         <f:ajax render="cont_form" execute="cont_form"/>
                                     </h:commandLink>
                                 </p:dataList>
