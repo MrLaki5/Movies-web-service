@@ -8,6 +8,7 @@ package controllers;
 import beans.MovieEnc;
 import beans.ProjectionWithMovie;
 import beans.UltraFest;
+import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import db.FestivalHelper;
 import db.LocationHelper;
 import db.MovieHelper;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -165,6 +167,8 @@ public class AdminController {
     private ProjectionWithMovie currEditProj=null;
     private String EditMovieForProjection;
     private String EditTempLock;
+    private String EditProjErr="";
+    private String EditFestErr="";
     
     //REDIRECT
     
@@ -200,11 +204,17 @@ public class AdminController {
     }
     
     public String goFestEdit(Festival fest){
+        EditFestErr="";
         UFest=new FestivalHelper().getUltraFest(fest);
         return "festEdit?faces-redirect=true";
     }
     
+    public String goFestEdit(){
+        return "festEdit?faces-redirect=true";
+    }
+    
     public String goProjectionEdit(ProjectionWithMovie proj){
+        EditProjErr="";
         currEditProj=proj;
         EditMovieForProjection=""+currEditProj.getMovie().getIdMovie();
         EditTempLock=currEditProj.getLocation().getAdress()+"_"+currEditProj.getLocation().getBuilding();
@@ -350,8 +360,91 @@ public class AdminController {
         return "festivalBrowsing?faces-redirect=true";
     }
     
+    public String saveEditProj(){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(currEditProj.getProjection().getDate());
+        calendar.add(Calendar.MINUTE, currEditProj.getMovie().getLength());
+        Date projectionEnd = calendar.getTime();
+        
+        Location locationTr=null;
+        for (Location festLocation : UFest.getFestLocations()) {
+            String temp=festLocation.getAdress()+"_"+festLocation.getBuilding();
+            if(temp.equals(EditTempLock)){
+                locationTr=festLocation;
+                break;
+            }
+        }
+        
+        int idMovie=Integer.parseInt(EditMovieForProjection);
+        Movie movie=new MovieHelper().getMovieById(idMovie);
+        
+        
+        if(currEditProj.getProjection().getDate().before(UFest.getFest().getDateFrom()) || currEditProj.getProjection().getDate().after(UFest.getFest().getDateTo())){
+            EditProjErr="Time of projection is not during time of festival";
+            return "";
+        }
+        
+        for (ProjectionWithMovie projection : UFest.getProjections()) {
+            String temp=projection.getLocation().getAdress()+"_"+projection.getLocation().getBuilding();
+            if(EditTempLock.equals(temp) && (!Objects.equals(currEditProj.getProjection().getIdProjection(), projection.getProjection().getIdProjection()))){           
+                calendar.setTime(projection.getProjection().getDate());
+                calendar.add(Calendar.MINUTE, projection.getMovie().getLength());
+                Date projectionEnd2=calendar.getTime();
+                
+                if(projection.getProjection().getDate().after(currEditProj.getProjection().getDate()) && projection.getProjection().getDate().before(projectionEnd)){
+                    EditProjErr="Times crossed with another projection";
+                    return "";
+                }
+                if(projectionEnd2.after(currEditProj.getProjection().getDate()) && projectionEnd2.before(projectionEnd)){
+                    EditProjErr="Times crossed with another projection";
+                    return "";
+                }
+            }
+        }
+        if(1==0){
+            EditProjErr="Price can not be zero";        //TODO add price check
+            return "";
+        }
+        
+        
+        ProjectionHelper pp=new ProjectionHelper();
+        pp.updateTimeInProjection(currEditProj.getProjection().getIdProjection(), currEditProj.getProjection().getDate());
+        currEditProj.setLocation(locationTr);
+        pp.updateLocationInProjection(currEditProj.getProjection().getIdProjection(), currEditProj.getLocation());
+        currEditProj.setMovie(movie);
+        pp.updateMovieInProjection(currEditProj.getProjection().getIdProjection(), currEditProj.getMovie().getIdMovie());
+        pp.updateVersionInProjection(currEditProj.getProjection().getIdProjection());
+        return goFestEdit();
+    }
+    
+    public String cancelProjection(){
+        ProjectionHelper pp=new ProjectionHelper();
+        pp.updateCancelingInProjection(currEditProj.getProjection().getIdProjection());
+        pp.updateVersionInProjection(currEditProj.getProjection().getIdProjection());
+        currEditProj.getProjection().setStatus("Canceled");
+        return goFestEdit();
+    }
+    
+    public String saveEditFest(){
+        if(UFest.getFest().getName().equals("")){                               //TODO ADD TICKETS AND INFO
+            EditFestErr="All fields must be set";
+            return "";
+        }
+        FestivalHelper fh=new FestivalHelper();
+        fh.updateNameInFestival(UFest.getFest().getIdFest(), UFest.getFest().getName());
+        return "festivalBrowsing?faces-redirect=true";
+    }
+    
     //GETTERS AND SETTERS
 
+    public String getEditFestErr() {
+        return EditFestErr;
+    }
+
+    public void setEditFestErr(String EditFestErr) {
+        this.EditFestErr = EditFestErr;
+    }
+    
     public String getFestivalName() {
         return FestivalName;
     }
@@ -503,8 +596,24 @@ public class AdminController {
     public void setEditTempLock(String EditTempLock) {
         this.EditTempLock = EditTempLock;
     }
+
+    public String getEditProjErr() {
+        return EditProjErr;
+    }
+
+    public void setEditProjErr(String EditProjErr) {
+        this.EditProjErr = EditProjErr;
+    }
     
-    
+    public boolean checkIfCanceled(ProjectionWithMovie proj){
+        
+        if(proj.getProjection().getStatus().equals("Canceled")){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     
     public List<User> getUnconfirmedUsers(){
         List<User> users=new UserHelper().getAllWithNoType();
@@ -550,6 +659,14 @@ public class AdminController {
             retList.add(new MovieEnc(movie));
         }
         return retList;
+    }
+    
+    public List<LocElem> getAllULocations(){
+        List<LocElem> locks=new ArrayList<>();
+        for (Location lock : UFest.getFestLocations()) {
+            locks.add(new LocElem(lock.getAdress(), lock.getBuilding()));
+        }
+        return locks;
     }
     
     public String formatDate(Date date){

@@ -77,4 +77,20 @@ public class LocationHelper implements Serializable{
         }
         return locations;
     }
+    
+    public Hall getHallFromLocation(Location location){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        Hall hall=null;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select hall from Hall hall"
+                    + " where hall.idLok="+location.getIdLok());
+            hall=(Hall) q.uniqueResult();
+            tx.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return hall;
+    }
 }

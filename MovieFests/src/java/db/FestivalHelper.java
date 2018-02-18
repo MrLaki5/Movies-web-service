@@ -198,4 +198,55 @@ public class FestivalHelper implements Serializable{
         return ufest;
     }
     
+    public void updateNameInFestival(int idFest, String name){
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Festival as fest where fest.idFest="+idFest);
+            Festival festival=(Festival) q.uniqueResult();
+            festival.setName(name);
+            session.saveOrUpdate(festival);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateTicketNumINFest(int idFest, int num){                         //TODO ADD TICEKT NUM
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Festival as fest where fest.idFest="+idFest);
+            Festival festival=(Festival) q.uniqueResult();
+            
+            session.saveOrUpdate(festival);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateInfoINFest(int idFest, String info){                         //TODO ADD INFO IN FEST
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Festival as fest where fest.idFest="+idFest);
+            Festival festival=(Festival) q.uniqueResult();
+            
+            session.saveOrUpdate(festival);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
 }

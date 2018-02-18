@@ -70,21 +70,25 @@
                                         Projections                                
                                     </f:facet>
                                     #{elem.movie.name}, #{elem.location.building}, #{adminController.formatDate(elem.projection.date)}
-                                    <h:commandLink value="Edit" class="text-primary" action="#{adminController.goProjectionEdit(elem)}" id="locationRemove">
+                                    
+                                    <p:outputLabel value="Canceled" rendered="#{adminController.checkIfCanceled(elem)}"/>                                                     
+                                    <h:commandLink value="Edit" class="text-primary" action="#{adminController.goProjectionEdit(elem)}" id="locationRemove" rendered="#{!adminController.checkIfCanceled(elem)}">
                                         <f:ajax render="cont_form" execute="cont_form"/>
-                                    </h:commandLink>
+                                    </h:commandLink>                                  
                                 </p:dataList>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12" style="height: 50px">
+                                <br/>
+                                <h:outputText class="text-danger" value="#{adminController.editFestErr}" id="errorMessage"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <h:commandButton class="btn btn-lg btn-primary" action="#{loginController.goFestivalBrowsing()}" value="Back"/>
                                 &nbsp;
-                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.thirdStepFestAdd()}" value="Save">
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.saveEditFest()}" value="Save">
                                     <f:ajax execute="cont_form" render="errorMessage"/>
                                 </h:commandButton>
                             </div>

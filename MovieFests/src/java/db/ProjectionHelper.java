@@ -7,6 +7,7 @@ package db;
 
 import beans.ProjectionWithMovie;
 import entities.Festival;
+import entities.Hall;
 import entities.Location;
 import entities.Movie;
 import entities.OnFest;
@@ -113,6 +114,111 @@ public class ProjectionHelper implements Serializable{
         
         return tempList;
     
+    }
+    
+    public void updateMovieInProjection(int idProj, int idMovie){
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Projection as res where res.idProjection="+idProj);
+            Projection projection=(Projection) q.uniqueResult();
+            projection.setIdMovie(idMovie);
+            session.saveOrUpdate(projection);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void updatePriceInProjection(int idProj, int price){                         //TODO ADD PRICE
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Projection as res where res.idProjection="+idProj);
+            Projection projection=(Projection) q.uniqueResult();
+            
+            session.saveOrUpdate(projection);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateTimeInProjection(int idProj, Date time){
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Projection as res where res.idProjection="+idProj);
+            Projection projection=(Projection) q.uniqueResult();
+            projection.setDate(time);
+            session.saveOrUpdate(projection);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateLocationInProjection(int idProj, Location location){
+        
+        Hall hall= new LocationHelper().getHallFromLocation(location);
+        
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Projection as res where res.idProjection="+idProj);
+            Projection projection=(Projection) q.uniqueResult();
+            projection.setIdHall(hall.getIdHall());
+            session.saveOrUpdate(projection);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateCancelingInProjection(int idProj){
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Projection as res where res.idProjection="+idProj);
+            Projection projection=(Projection) q.uniqueResult();
+            projection.setStatus("Canceled");
+            session.saveOrUpdate(projection);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateVersionInProjection(int idProj){
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Projection as res where res.idProjection="+idProj);
+            Projection projection=(Projection) q.uniqueResult();
+            projection.setVersion(projection.getVersion()+1);
+            session.saveOrUpdate(projection);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
 }
