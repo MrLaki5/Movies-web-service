@@ -5,6 +5,7 @@
  */
 package db;
 
+import entities.Festival;
 import entities.Movie;
 import entities.User;
 import java.io.Serializable;
@@ -62,5 +63,13 @@ public class MovieHelper implements Serializable{
             e.printStackTrace();
         }
         return movies;
+    }
+    
+    public void saveMovie(Movie movie){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(movie);
+        session.getTransaction().commit();
     }
 }

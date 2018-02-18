@@ -7,12 +7,14 @@ package controllers;
 
 import beans.MovieEnc;
 import beans.ProjectionWithMovie;
+import beans.ReservationWithRating;
 import beans.UltraFest;
 import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import db.FestivalHelper;
 import db.LocationHelper;
 import db.MovieHelper;
 import db.ProjectionHelper;
+import db.ReservationHelper;
 import db.UserHelper;
 import entities.Festival;
 import entities.Hall;
@@ -24,6 +26,12 @@ import entities.OnLocation;
 import entities.OnLocationId;
 import entities.Projection;
 import entities.User;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,8 +41,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import org.primefaces.model.UploadedFile;
+import sun.misc.IOUtils;
+
 
 /**
  *
@@ -45,6 +60,8 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class AdminController {
 
+    public static final String image_path="/Users/milanlazarevic/Desktop/movies-site-java-faces/MovieFests/web/Images";
+    
     public class LocElem{
         private String location;
         private String building;
@@ -170,6 +187,17 @@ public class AdminController {
     private String EditProjErr="";
     private String EditFestErr="";
     
+    private Movie newMovie=null;
+    private int rootB=0;
+    
+    private String MovieNewName="";
+    private UploadedFile file=null;
+    private String ErrorMovie="";
+    private int MovieYear=0;
+    private List<String> actors=null;
+    private List<String> images=null;
+    private String ActorName="";
+    
     //REDIRECT
     
     public String goNewFestival(){
@@ -221,7 +249,71 @@ public class AdminController {
         return "projectionEdit?faces-redirect=true";
     }
     
+    public String goNewMovie(){
+        rootB=0;       
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        LoginController firstBean = (LoginController) elContext.getELResolver().getValue(elContext, null, "loginController");
+        firstBean.setCurrPage(3);
+        actors=new ArrayList<>();
+        newMovie=new Movie();
+        newMovie.setDirector("");
+        newMovie.setCountry("");
+        newMovie.setAbout("");
+        newMovie.setImdb("");
+        newMovie.setTomato("");
+        newMovie.setYoutube("");
+        newMovie.setLength(0);
+        ActorName="";
+        file=null;
+        ErrorMovie="";
+        MovieYear=0;
+        MovieNewName="";
+        return "newMovie?faces-redirect=true";
+    }
+    
+    public String goNewMovieFromFest(){
+        rootB=1;
+        actors=new ArrayList<>();
+        newMovie=new Movie();
+        newMovie=new Movie();
+        newMovie.setDirector("");
+        newMovie.setCountry("");
+        newMovie.setAbout("");
+        newMovie.setImdb("");
+        newMovie.setTomato("");
+        newMovie.setYoutube("");
+        newMovie.setLength(0);
+        ActorName="";
+        file=null;
+        MovieYear=0;
+        ErrorMovie="";
+        MovieNewName="";
+        return "newMovie?faces-redirect=true";
+    }
+    
     //LOGICS
+    
+    public void addActor(){
+        if(ActorName.equals("")){
+            return;
+        }
+        for (int i=0; i<actors.size(); i++) {
+            if(actors.get(i).equals(ActorName)){
+                return;
+            }
+        }
+        actors.add(ActorName);
+        ActorName="";
+    }
+    
+    public void removeActor(String actor){
+        for (int i=0; i<actors.size(); i++) {
+            if(actors.get(i).equals(actor)){
+                actors.remove(i);
+                return;
+            }
+        }
+    }
     
     public void updateUser(User user){
         new UserHelper().changeUserType(user.getUsername(), nameMap.get(user.getUsername()));
@@ -435,7 +527,116 @@ public class AdminController {
         return "festivalBrowsing?faces-redirect=true";
     }
     
+    public String saveMovie(){
+        
+        if(file==null){
+            ErrorMovie="Movie artwork must be set";
+            return "";
+        }
+
+        if(MovieNewName.equals("") || MovieYear<1900 || newMovie.getDirector().equals("") || newMovie.getCountry().equals("") || newMovie.getAbout().equals("")
+                || newMovie.getLength()==0 || actors.size()==0){
+            ErrorMovie="All fields must be set";
+            return "";
+        }
+
+        String imageName="";
+        
+        if(!file.getFileName().equals("")){
+            String filename = "1"; 
+            String extension = file.getContentType().split("/")[1];
+            try {
+                Path temp=Paths.get(AdminController.image_path);
+                Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
+                InputStream input = file.getInputstream();
+                Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
+                String []nizStr=file1.toString().split("/");
+                imageName=nizStr[nizStr.length-1];
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        
+        newMovie.setName(MovieNewName);
+        newMovie.setYear(MovieYear);
+
+        new MovieHelper().saveMovie(newMovie);
+
+        if(rootB==1){
+            return goNewFestival2Back();
+        }
+        else{
+            return goNewMovie();
+        }
+        
+    }
+    
     //GETTERS AND SETTERS
+
+    public String getActorName() {
+        return ActorName;
+    }
+
+    public void setActorName(String ActorName) {
+        this.ActorName = ActorName;
+    }
+
+    public List<String> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<String> actors) {
+        this.actors = actors;
+    }
+
+    public int getMovieYear() {
+        return MovieYear;
+    }
+
+    public void setMovieYear(int MovieYear) {
+        this.MovieYear = MovieYear;
+    }
+
+    public String getMovieNewName() {
+        return MovieNewName;
+    }
+
+    public void setMovieNewName(String MovieNewName) {
+        this.MovieNewName = MovieNewName;
+    }
+
+    public String getErrorMovie() {
+        return ErrorMovie;
+    }
+
+    public void setErrorMovie(String ErrorMovie) {
+        this.ErrorMovie = ErrorMovie;
+    }
+    
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+    
+    public Movie getNewMovie() {
+        return newMovie;
+    }
+
+    public void setNewMovie(Movie newMovie) {
+        this.newMovie = newMovie;
+    }
+
+    public int getRootB() {
+        return rootB;
+    }
+
+    public void setRootB(int rootB) {
+        this.rootB = rootB;
+    }
 
     public String getEditFestErr() {
         return EditFestErr;

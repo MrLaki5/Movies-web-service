@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <!-- Bootstrap core CSS -->
+        <link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <!-- Custom styles for this template -->
+        <link href="resources/css/modern-business.css" rel="stylesheet"/>
+
+        <title>Movie Fests</title>
+
+    </h:head>
+
+    <h:body>  
+
+        <c:choose>
+            <c:when test="#{loginController.isLoged==3}">
+                
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
+
+                <h:form id="cont_form" enctype="multipart/form-data">
+                    <div class="container-fluid" align="center">                    
+                        <div class="row">
+                            <div class="col-md-12" style="height: 100px">
+                                <br/>
+                                <h1 class="h3 mb-3 font-weight-normal">Create movie:</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                    
+                                    <p:outputLabel for="movieName" value="Movie name:"/>
+                                    <p:inputText id="movieName" value="#{adminController.movieNewName}"/>
+                                    <p:outputLabel for="movieYear" value="Movie year:"/>
+                                    <p:inputText id="movieYear" value="#{adminController.movieYear}"/>                                   
+                                    <p:outputLabel for="aboutInf" value="About:"/>
+                                    <p:inputTextarea id="aboutInf" value="#{adminController.newMovie.about}" rows="6" cols="33" />
+                                    <p:outputLabel for="director" value="Director:"/>
+                                    <p:inputText id="director" value="#{adminController.newMovie.director}"/>
+                                    <p:outputLabel for="length" value="Length"/>
+                                    <p:inputText id="length" value="#{adminController.newMovie.length}"/>
+                                    <p:outputLabel for="country" value="Country:"/>
+                                    <p:inputText id="country" value="#{adminController.newMovie.country}"/>                                  
+                                    <p:outputLabel for="imdb" value="Imdb:"/>
+                                    <p:inputText id="imdb" value="#{adminController.newMovie.imdb}"/>                                   
+                                    <p:outputLabel for="tomato" value="Tomato:"/>
+                                    <p:inputText id="tomato" value="#{adminController.newMovie.tomato}"/>                                  
+                                    <p:outputLabel for="youtube" value="Youtube:"/>
+                                    <p:inputText id="youtube" value="#{adminController.newMovie.youtube}"/>
+                                    <p:outputLabel for="loadPhoto" value="Movie poster:"/>
+                                    <p:fileUpload value="#{adminController.file}" mode="simple" id="loadPhoto"/>    
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="height: 50px">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-2 col-md-4">
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                    <p:outputLabel for="actorName" value="Actor:"/>
+                                    <p:inputText id="actorName" value="#{adminController.actorName}"/>
+                                    <h:commandLink value="Add actor" class="text-primary" action="#{adminController.addActor()}" id="actorLink">
+                                        <f:ajax render="cont_form" execute="cont_form"/>
+                                    </h:commandLink>
+                                </h:panelGrid>
+                            </div>
+                            <div class="col-md-4">
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                    <p:outputLabel for="imageName" value="Image:"/>
+                                    <p:inputText id="imageName" value="#{adminController.actorName}"/>
+                                    <h:commandLink value="Add actor" class="text-primary" action="#{adminController.addActor()}" id="imageLink">
+                                        <f:ajax render="cont_form" execute="cont_form"/>
+                                    </h:commandLink>
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-2 col-md-4">
+                                <p:dataList value="#{adminController.actors}" var="elem" type="ordered" paginator="true" rows="5">
+                                    <f:facet name="header">
+                                        Actors                                
+                                    </f:facet>
+                                    #{elem}
+                                    <h:commandLink value="Remove" class="text-primary" action="#{adminController.removeActor(elem)}" id="actorRemove">
+                                        <f:ajax render="cont_form" execute="cont_form"/>
+                                    </h:commandLink>
+                                </p:dataList>
+                            </div>
+                            <div class="col-md-4">
+                                <p:dataList value="#{adminController.actors}" var="elem" type="ordered" paginator="true" rows="5">
+                                    <f:facet name="header">
+                                        Gallery                                
+                                    </f:facet>
+                                    #{elem}
+                                    <h:commandLink value="Remove" class="text-primary" action="#{adminController.removeActor(elem)}" id="imageRemove">
+                                        <f:ajax render="cont_form" execute="cont_form"/>
+                                    </h:commandLink>
+                                </p:dataList>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="height: 50px">
+                                <br/>
+                                <h:outputText class="text-danger" value="#{adminController.errorMovie}" id="errorMessage"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.goFestEdit()}" value="Back" rendered="#{adminController.rootB==1}"/>
+                                &nbsp;
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.saveMovie()}" value="Save">
+                                    <f:ajax execute="cont_form" render="errorMessage"/>
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+
+                <ui:insert name = "foother" >
+                    <ui:include src = "templates/foother.xhtml" />
+                </ui:insert> 
+                
+            </c:when>
+            <c:otherwise>
+                <ui:insert name="header">
+                    <ui:include src="templates/error.xhtml"/>
+                </ui:insert>
+            </c:otherwise>
+        </c:choose>
+    </h:body>
+</html>
+
+
+
