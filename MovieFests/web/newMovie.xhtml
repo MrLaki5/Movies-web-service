@@ -56,9 +56,7 @@
                                     <p:outputLabel for="tomato" value="Tomato:"/>
                                     <p:inputText id="tomato" value="#{adminController.newMovie.tomato}"/>                                  
                                     <p:outputLabel for="youtube" value="Youtube:"/>
-                                    <p:inputText id="youtube" value="#{adminController.newMovie.youtube}"/>
-                                    <p:outputLabel for="loadPhoto" value="Movie poster:"/>
-                                    <p:fileUpload value="#{adminController.file}" mode="simple" id="loadPhoto"/>    
+                                    <p:inputText id="youtube" value="#{adminController.newMovie.youtube}"/>  
                                 </h:panelGrid>
                             </div>
                         </div>
@@ -101,7 +99,7 @@
                             <div class="col-md-4">
                                 <p:dataList value="#{adminController.images}" var="elem" type="ordered" paginator="true" rows="5">
                                     <f:facet name="header">
-                                        Gallery                                
+                                        Gallery (first image is movie artwork)                                
                                     </f:facet>
                                     #{elem.fileName}
                                     <h:commandLink value="Remove" class="text-primary" action="#{adminController.removeImageForGallery(elem.fileName)}" id="imageRemove">

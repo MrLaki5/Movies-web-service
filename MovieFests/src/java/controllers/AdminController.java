@@ -560,30 +560,26 @@ public class AdminController {
     }
     
     public String saveMovie(){
-        
-        if(file==null){
-            ErrorMovie="Movie artwork must be set";
-            return "";
-        }
 
         if(MovieNewName.equals("") || MovieYear<1900 || newMovie.getDirector().equals("") || newMovie.getCountry().equals("") || newMovie.getAbout().equals("")
-                || newMovie.getLength()==0 || actors.isEmpty() || images.isEmpty()){
+                || newMovie.getLength()==0 || actors.isEmpty() || images.size()<2){
             ErrorMovie="All fields must be set";
             return "";
         }
 
         String imageName="";
         
-        if(!file.getFileName().equals("")){
+        if(!images.get(0).getFileName().equals("")){
             String filename = "1"; 
-            String extension = file.getContentType().split("/")[1];
+            String extension = images.get(0).getContentType().split("/")[1];
             try {
                 Path temp=Paths.get(AdminController.image_path);
                 Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
-                InputStream input = file.getInputstream();
+                InputStream input = images.get(0).getInputstream();
                 Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
                 String []nizStr=file1.toString().split("/");
                 imageName=nizStr[nizStr.length-1];
+                images.remove(0);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

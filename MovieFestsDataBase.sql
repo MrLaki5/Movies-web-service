@@ -1,29 +1,40 @@
 
+CREATE TABLE Actor
+(
+	IdActor              INTEGER NOT NULL AUTO_INCREMENT,
+	Name                 CHAR(50) NULL,
+	IdMovie              INTEGER NULL,
+	CONSTRAINT XPKActors PRIMARY KEY (IdActor)
+)
+ AUTO_INCREMENT = 1;
+
 CREATE TABLE Feedback
 (
 	IdRes                INTEGER NOT NULL,
 	Rate                 INTEGER NULL,
 	Comment              VARCHAR(100) NULL,
 	IdMovie              INTEGER NULL,
-    PRIMARY KEY (IdRes)
+	CONSTRAINT XPKFeedback PRIMARY KEY (IdRes)
 );
 
 CREATE TABLE Festival
 (
 	IdFest               INTEGER NOT NULL AUTO_INCREMENT,
-	DateFrom             DATE NULL,
-	DateTo               DATE NULL,
+	DateFrom             DATETIME NULL,
+	DateTo               DATETIME NULL,
 	Name                 VARCHAR(20) NULL,
-    PRIMARY KEY (IdFest)
+	Info                 VARCHAR(100) NULL,
+	TicketNum            INTEGER NULL,
+	CONSTRAINT XPKFestival PRIMARY KEY (IdFest)
 )
  AUTO_INCREMENT = 1;
 
 CREATE TABLE Galery
 (
 	IdG                  INTEGER NOT NULL AUTO_INCREMENT,
-	Picture              BLOB NULL,
+	Picture              VARCHAR(50) NULL,
 	IdMovie              INTEGER NULL,
-    PRIMARY KEY (IdG)
+	CONSTRAINT XPKGalery PRIMARY KEY (IdG)
 )
  AUTO_INCREMENT = 1;
 
@@ -31,7 +42,7 @@ CREATE TABLE Hall
 (
 	IdHall               INTEGER NOT NULL AUTO_INCREMENT,
 	IdLok                INTEGER NULL,
-    PRIMARY KEY (IdHall)
+	CONSTRAINT XPKHall PRIMARY KEY (IdHall)
 )
  AUTO_INCREMENT = 1;
 
@@ -40,7 +51,7 @@ CREATE TABLE Location
 	IdLok                INTEGER NOT NULL AUTO_INCREMENT,
 	Building             VARCHAR(20) NULL,
 	Adress               VARCHAR(50) NULL,
-    PRIMARY KEY (IdLok)
+	CONSTRAINT XPKLocation PRIMARY KEY (IdLok)
 )
  AUTO_INCREMENT = 1;
 
@@ -48,7 +59,7 @@ CREATE TABLE Movie
 (
 	IdMovie              INTEGER NOT NULL AUTO_INCREMENT,
 	Name                 VARCHAR(20) NULL,
-	Picture              BLOB NULL,
+	Picture              VARCHAR(50) NULL,
 	Year                 INTEGER NULL,
 	About                VARCHAR(100) NULL,
 	Director             VARCHAR(50) NULL,
@@ -57,7 +68,7 @@ CREATE TABLE Movie
 	imdb                 VARCHAR(60) NULL,
 	tomato               VARCHAR(60) NULL,
 	youtube              VARCHAR(60) NULL,
-    PRIMARY KEY (IdMovie)
+	CONSTRAINT XPKMovie PRIMARY KEY (IdMovie)
 )
  AUTO_INCREMENT = 1;
 
@@ -65,14 +76,14 @@ CREATE TABLE OnFest
 (
 	IdFest               INTEGER NOT NULL,
 	IdProjection         INTEGER NOT NULL,
-    PRIMARY KEY (IdFest,IdProjection)
+	CONSTRAINT XPKOnFest PRIMARY KEY (IdFest,IdProjection)
 );
 
 CREATE TABLE OnLocation
 (
 	IdFest               INTEGER NOT NULL,
 	IdLok                INTEGER NOT NULL,
-    PRIMARY KEY (IdFest,IdLok)
+	CONSTRAINT XPKOnLocation PRIMARY KEY (IdFest,IdLok)
 );
 
 CREATE TABLE Projection
@@ -80,26 +91,26 @@ CREATE TABLE Projection
 	IdProjection         INTEGER NOT NULL AUTO_INCREMENT,
 	IdMovie              INTEGER NULL,
 	IdHall               INTEGER NULL,
-	Hour                 INTEGER NULL,
-	Date                 DATE NULL,
+	Date                 DATETIME NULL,
 	Status               VARCHAR(20) NULL,
 	Version              INTEGER NULL,
-    PRIMARY KEY (IdProjection)
+	Price                INTEGER NULL,
+	CONSTRAINT XPKProjection PRIMARY KEY (IdProjection)
 )
  AUTO_INCREMENT = 1;
- 
+
 CREATE TABLE Reservation
 (
 	IdRes                INTEGER NOT NULL AUTO_INCREMENT,
 	Code                 VARCHAR(10) NULL,
-	Date                 DATE NULL,
+	Date                 DATETIME NULL,
 	Type                 VARCHAR(20) NULL,
 	TicketNum            INTEGER NULL,
 	Username             VARCHAR(20) NULL,
 	IdProjection         INTEGER NULL,
 	Status               VARCHAR(20) NULL,
 	Version              INTEGER NULL,
-    PRIMARY KEY (IdRes)
+	CONSTRAINT XPKReservation PRIMARY KEY (IdRes)
 )
  AUTO_INCREMENT = 1;
 
@@ -112,9 +123,11 @@ CREATE TABLE User
 	Phone                VARCHAR(20) NULL,
 	Password             VARCHAR(12) NULL,
 	Type                 VARCHAR(20) NULL,
-    PRIMARY KEY (Username)
+	CONSTRAINT XPKUser PRIMARY KEY (Username)
 );
 
+ALTER TABLE Actor
+ADD CONSTRAINT R_14 FOREIGN KEY (IdMovie) REFERENCES Movie (IdMovie);
 
 ALTER TABLE Feedback
 ADD CONSTRAINT R_11 FOREIGN KEY (IdRes) REFERENCES Reservation (IdRes);
