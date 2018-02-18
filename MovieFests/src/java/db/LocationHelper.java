@@ -5,6 +5,7 @@
  */
 package db;
 
+import entities.Festival;
 import entities.Hall;
 import entities.Location;
 import entities.Movie;
@@ -59,5 +60,21 @@ public class LocationHelper implements Serializable{
             e.printStackTrace();
         }
         return location;
+    }
+    
+    public List<Location> getLocationFromFest(Festival fest){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        List<Location> locations=null;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select lok from Location lok, Festival fest, OnLocation olok"
+                    + " where lok.idLok=olok.id.idLok AND olok.id.idFest=fest.idFest AND fest.idFest="+fest.getIdFest());
+            locations=(List<Location>) q.list();
+            tx.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return locations;
     }
 }

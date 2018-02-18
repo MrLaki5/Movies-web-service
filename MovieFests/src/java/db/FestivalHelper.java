@@ -7,6 +7,8 @@ package db;
 
 import beans.ElemOfProLok;
 import beans.FestivalWithProjections;
+import beans.ProjectionWithMovie;
+import beans.UltraFest;
 import entities.Festival;
 import entities.Location;
 import entities.Movie;
@@ -169,6 +171,31 @@ public class FestivalHelper implements Serializable{
             e.printStackTrace();
         }
         return festivali;
+    }
+    
+    public UltraFest getUltraFest(Festival fest){
+        Session session=null;
+        List<ProjectionWithMovie> projections=null;
+        List<Location> locations=null;
+        UltraFest ufest=null;
+        try{           
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select proj from Projection proj, Festival fest, OnFest ofest where "
+                    + " ofest.id.idProjection=proj.idProjection AND ofest.id.idFest=fest.idFest AND fest.idFest="+fest.getIdFest());
+            List<Projection> projectionsTemp=(List<Projection>) q.list();
+            tx.commit();
+            
+            projections=new ProjectionHelper().getUpgradeProjections(projectionsTemp);
+            
+            locations=new LocationHelper().getLocationFromFest(fest);
+            
+            ufest=new UltraFest(fest, locations, projections);
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return ufest;
     }
     
 }

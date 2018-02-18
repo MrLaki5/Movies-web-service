@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <!-- Bootstrap core CSS -->
+        <link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <!-- Custom styles for this template -->
+        <link href="resources/css/modern-business.css" rel="stylesheet"/>
+
+        <title>Movie Fests</title>
+
+    </h:head>
+
+    <h:body>  
+
+        <c:choose>
+            <c:when test="#{loginController.isLoged==3}">
+                
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
+
+                <h:form id="cont_form">
+                    <div class="container-fluid" align="center">                    
+                        <div class="row">
+                            <div class="col-md-12" style="height: 100px">
+                                <br/>
+                                <h1 class="h3 mb-3 font-weight-normal">Edit projection:</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                    <p:outputLabel for="movie" value="Movie:"/>
+                                    <p:selectOneMenu id="movie" value="#{adminController.editMovieForProjection}" style="width:125px" filter="true" filterMatchMode="startsWith">
+                                        <f:selectItems  value="#{adminController.allMovies}" var="elem" itemLabel="#{elem.movie.name}, #{elem.movie.year}" itemValue="#{elem.idMovie}"/>
+                                    </p:selectOneMenu>
+                                    <h:commandLink value="Create new movie" class="text-primary"/>
+                                    <br/>
+                                    <p:outputLabel for="price" value="Price:"/>
+                                    <p:inputText id="price" value="#{adminController.price}"/>                                   
+                                    <p:outputLabel for="popup1" value="Time:"/>
+                                    <p:calendar id="popup1" value="#{adminController.timeDate}" pattern="MM/dd/yyyy HH:mm:ss"/>                                   
+                                    <p:outputLabel for="location" value="Location:"/>
+                                    <p:selectOneMenu id="location" value="#{adminController.editTempLock}" style="width:125px" filter="true" filterMatchMode="startsWith">
+                                        <f:selectItems  value="#{adminController.locations}" var="elem1" itemLabel="#{elem1.location}, #{elem1.building}" itemValue="#{elem1.toString()}"/>
+                                    </p:selectOneMenu>            
+                                    <h:commandLink value="Add projection" class="text-primary" action="#{adminController.addProjection()}" id="projectionLink">
+                                        <f:ajax render="cont_form" execute="cont_form"/>
+                                    </h:commandLink>
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-4 col-md-4">
+                                <p:dataList value="#{adminController.projections}" var="elem" type="ordered" paginator="true" rows="5">
+                                    <f:facet name="header">
+                                        Projections                                
+                                    </f:facet>
+                                    #{elem.movie.movie.name}, #{elem.location.building}, #{adminController.formatDate(elem.time)}
+                                    <h:commandLink value="Remove" class="text-primary" action="#{adminController.removeProjection(elem)}" id="locationRemove">
+                                        <f:ajax render="cont_form" execute="cont_form"/>
+                                    </h:commandLink>
+                                </p:dataList>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="height: 50px">
+                                <br/>
+                                <h:outputText class="text-danger" value="#{adminController.secondStepError}" id="errorMessage"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.goNewFestivalBack()}" value="Back"/>
+                                &nbsp;
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.secondStepAdd()}" value="Next">
+                                    <f:ajax execute="cont_form" render="errorMessage"/>
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+
+                <ui:insert name = "foother" >
+                    <ui:include src = "templates/foother.xhtml" />
+                </ui:insert> 
+                
+            </c:when>
+            <c:otherwise>
+                <ui:insert name="header">
+                    <ui:include src="templates/error.xhtml"/>
+                </ui:insert>
+            </c:otherwise>
+        </c:choose>
+    </h:body>
+</html>
+
+
+

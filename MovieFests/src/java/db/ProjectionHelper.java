@@ -91,4 +91,28 @@ public class ProjectionHelper implements Serializable{
         
         return tempList;
     }
+    
+    public List<ProjectionWithMovie> getUpgradeProjections(List<Projection> projections){
+        List<ProjectionWithMovie> tempList= new ArrayList<>();
+        
+        
+        try{
+            for (Iterator<Projection> iterator = projections.iterator(); iterator.hasNext();) {
+                Projection next = iterator.next();
+                
+                Movie movie=new MovieHelper().getMovieById(next.getIdMovie());
+                Location location=new LocationHelper().getLocationFromProjection(next);
+                
+                tempList.add(new ProjectionWithMovie(next, movie, location));
+            }
+            
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return tempList;
+    
+    }
+    
 }

@@ -6,6 +6,8 @@
 package controllers;
 
 import beans.MovieEnc;
+import beans.ProjectionWithMovie;
+import beans.UltraFest;
 import db.FestivalHelper;
 import db.LocationHelper;
 import db.MovieHelper;
@@ -159,6 +161,11 @@ public class AdminController {
     private List<ProjElem> projections;
     private String SecondStepError="";
     
+    private UltraFest UFest=null;
+    private ProjectionWithMovie currEditProj=null;
+    private String EditMovieForProjection;
+    private String EditTempLock;
+    
     //REDIRECT
     
     public String goNewFestival(){
@@ -190,6 +197,18 @@ public class AdminController {
         SecondStepError="";
         FirstStepError="";
         return "newFestival2?faces-redirect=true";
+    }
+    
+    public String goFestEdit(Festival fest){
+        UFest=new FestivalHelper().getUltraFest(fest);
+        return "festEdit?faces-redirect=true";
+    }
+    
+    public String goProjectionEdit(ProjectionWithMovie proj){
+        currEditProj=proj;
+        EditMovieForProjection=""+currEditProj.getMovie().getIdMovie();
+        EditTempLock=currEditProj.getLocation().getAdress()+"_"+currEditProj.getLocation().getBuilding();
+        return "projectionEdit?faces-redirect=true";
     }
     
     //LOGICS
@@ -452,6 +471,40 @@ public class AdminController {
     public void setSecondStepError(String SecondStepError) {
         this.SecondStepError = SecondStepError;
     }
+
+    public UltraFest getUFest() {
+        return UFest;
+    }
+
+    public void setUFest(UltraFest UFest) {
+        this.UFest = UFest;
+    }
+
+    public ProjectionWithMovie getCurrEditProj() {
+        return currEditProj;
+    }
+
+    public void setCurrEditProj(ProjectionWithMovie currEditProj) {
+        this.currEditProj = currEditProj;
+    }
+
+    public String getEditMovieForProjection() {
+        return EditMovieForProjection;
+    }
+
+    public void setEditMovieForProjection(String EditMovieForProjection) {
+        this.EditMovieForProjection = EditMovieForProjection;
+    }
+
+    public String getEditTempLock() {
+        return EditTempLock;
+    }
+
+    public void setEditTempLock(String EditTempLock) {
+        this.EditTempLock = EditTempLock;
+    }
+    
+    
     
     public List<User> getUnconfirmedUsers(){
         List<User> users=new UserHelper().getAllWithNoType();

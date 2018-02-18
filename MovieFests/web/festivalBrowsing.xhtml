@@ -58,7 +58,7 @@
                             <p:dataTable var="elem" value="#{adminController.allfestivals}" id="tableFest" paginator="true" rows="10">
                                 <p:column headerText="Name">                                                       
                                     <h:form>
-                                        <h:commandLink value="#{elem.name}" class="text-primary"/>                                      
+                                        <h:commandLink value="#{elem.name}" action="#{adminController.goFestEdit(elem)}" class="text-primary"/>                                      
                                     </h:form>
                                 </p:column>
 
