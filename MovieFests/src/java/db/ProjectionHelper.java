@@ -9,6 +9,7 @@ import beans.ProjectionWithMovie;
 import entities.Festival;
 import entities.Location;
 import entities.Movie;
+import entities.OnFest;
 import entities.Projection;
 import entities.User;
 import java.io.Serializable;
@@ -25,6 +26,22 @@ import org.hibernate.Session;
  * @author milanlazarevic
  */
 public class ProjectionHelper implements Serializable{
+    
+    public void saveProjection(Projection projection){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(projection);
+        session.getTransaction().commit();
+    }
+    
+    public void saveOnFest(OnFest onFest){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(onFest);
+        session.getTransaction().commit();
+    }
     
      public Projection getProjectionById(int id){
         Session session=null;

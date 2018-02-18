@@ -27,6 +27,14 @@ import org.hibernate.Session;
  */
 public class FestivalHelper implements Serializable{
     
+    public void saveFestival(Festival fest){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(fest);
+        session.getTransaction().commit();
+    }
+    
     public List<Festival> getCurrentFestivals(Date dateFrom, Date dateTo){
         Session session=null;
         session=HibernateUtil.getSessionFactory().getCurrentSession();

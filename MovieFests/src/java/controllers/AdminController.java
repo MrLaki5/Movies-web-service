@@ -7,10 +7,19 @@ package controllers;
 
 import beans.MovieEnc;
 import db.FestivalHelper;
+import db.LocationHelper;
 import db.MovieHelper;
+import db.ProjectionHelper;
 import db.UserHelper;
 import entities.Festival;
+import entities.Hall;
+import entities.Location;
 import entities.Movie;
+import entities.OnFest;
+import entities.OnFestId;
+import entities.OnLocation;
+import entities.OnLocationId;
+import entities.Projection;
 import entities.User;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,10 +44,14 @@ public class AdminController {
     public class LocElem{
         private String location;
         private String building;
+        private int idLok;
+        private int idHall;
 
         public LocElem(String location, String building) {
             this.location = location;
             this.building = building;
+            this.idLok=-1;
+            this.idHall=-1;
         }
 
         public String getLocation() {
@@ -60,6 +73,22 @@ public class AdminController {
         @Override
         public String toString(){
             return location+"_"+building;
+        }
+
+        public int getIdLok() {
+            return idLok;
+        }
+
+        public void setIdLok(int idLok) {
+            this.idLok = idLok;
+        }  
+
+        public int getIdHall() {
+            return idHall;
+        }
+
+        public void setIdHall(int idHall) {
+            this.idHall = idHall;
         }
     }
     
@@ -155,6 +184,12 @@ public class AdminController {
         SecondStepError="";
         FirstStepError="";
         return "newFestival?faces-redirect=true";
+    }
+    
+    public String goNewFestival2Back(){
+        SecondStepError="";
+        FirstStepError="";
+        return "newFestival2?faces-redirect=true";
     }
     
     //LOGICS
@@ -254,6 +289,46 @@ public class AdminController {
         }
         SecondStepError="";
         return "newFestival3?faces-redirect=true";
+    }
+    
+    public String thirdStepFestAdd(){
+        Festival newFest=new Festival(StartDate, EndDate, FestivalName);
+        new FestivalHelper().saveFestival(newFest);
+        LocationHelper lp=new LocationHelper();
+        ProjectionHelper pp=new ProjectionHelper();
+        for (LocElem location : locations) {
+            Location loc=new Location(location.getBuilding(), location.getLocation());
+            lp.saveLocation(loc);
+            Hall hall=new Hall(loc.getIdLok());
+            lp.saveHall(hall);
+            location.setIdLok(hall.getIdLok());
+            location.setIdHall(hall.getIdHall());
+            OnLocation onLocation=new OnLocation(new OnLocationId(newFest.getIdFest(), loc.getIdLok()));
+            lp.saveOnLocation(onLocation);
+        }
+        for (ProjElem projection : projections) {
+            Projection pro=new Projection(projection.getMovie().getMovie().getIdMovie(), projection.getLocation().getIdHall(), 0, projection.getTime(), "on");
+            pro.setVersion(0);
+            pp.saveProjection(pro);
+            OnFest onFest=new OnFest(new OnFestId(newFest.getIdFest(), pro.getIdProjection()));
+            pp.saveOnFest(onFest);
+        }
+        FestivalName="";
+        LocationName="";
+        BuildingName="";
+        FestInfo="";
+        FirstStepError="";
+        Price=0;
+        TicketNum=0;
+        StartDate=null;
+        EndDate=null;
+        MovieForProjection="";
+        tempLock="";
+        timeDate=null;
+        SecondStepError="";
+        locations=new ArrayList<>();
+        projections=new ArrayList<>();
+        return "festivalBrowsing?faces-redirect=true";
     }
     
     //GETTERS AND SETTERS

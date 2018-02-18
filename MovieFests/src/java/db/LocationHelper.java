@@ -5,8 +5,10 @@
  */
 package db;
 
+import entities.Hall;
 import entities.Location;
 import entities.Movie;
+import entities.OnLocation;
 import entities.Projection;
 import java.io.Serializable;
 import java.util.List;
@@ -19,6 +21,29 @@ import org.hibernate.Session;
  */
 public class LocationHelper implements Serializable{
     
+    public void saveLocation(Location location){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(location);
+        session.getTransaction().commit();
+    }
+    
+    public void saveHall(Hall hall){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(hall);
+        session.getTransaction().commit();
+    }
+    
+    public void saveOnLocation(OnLocation onLocation){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(onLocation);
+        session.getTransaction().commit();
+    }
     
     public Location getLocationFromProjection(Projection projection){
         Session session=null;
