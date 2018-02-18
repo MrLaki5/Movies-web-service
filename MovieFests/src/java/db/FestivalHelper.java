@@ -215,7 +215,7 @@ public class FestivalHelper implements Serializable{
         }
     }
     
-    public void updateTicketNumINFest(int idFest, int num){                         //TODO ADD TICEKT NUM
+    public void updateTicketNumINFest(int idFest, int num){                     
         try{            
             Session session=null;
             session=HibernateUtil.getSessionFactory().getCurrentSession();
@@ -223,7 +223,7 @@ public class FestivalHelper implements Serializable{
            
             Query q=session.createQuery("from Festival as fest where fest.idFest="+idFest);
             Festival festival=(Festival) q.uniqueResult();
-            
+            festival.setTicketNum(num);
             session.saveOrUpdate(festival);
             session.getTransaction().commit();
         }
@@ -232,7 +232,7 @@ public class FestivalHelper implements Serializable{
         }
     }
     
-    public void updateInfoINFest(int idFest, String info){                         //TODO ADD INFO IN FEST
+    public void updateInfoINFest(int idFest, String info){                     
         try{            
             Session session=null;
             session=HibernateUtil.getSessionFactory().getCurrentSession();
@@ -240,7 +240,7 @@ public class FestivalHelper implements Serializable{
            
             Query q=session.createQuery("from Festival as fest where fest.idFest="+idFest);
             Festival festival=(Festival) q.uniqueResult();
-            
+            festival.setInfo(info);
             session.saveOrUpdate(festival);
             session.getTransaction().commit();
         }

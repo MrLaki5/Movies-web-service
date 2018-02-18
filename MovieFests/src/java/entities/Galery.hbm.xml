@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Feb 14, 2018 12:46:37 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Feb 18, 2018 8:22:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entities.Galery" table="Galery" catalog="MovieFests" optimistic-lock="version">
         <id name="idG" type="java.lang.Integer">
             <column name="IdG" />
             <generator class="identity" />
         </id>
-        <property name="picture" type="binary">
-            <column name="Picture" />
+        <property name="picture" type="string">
+            <column name="Picture" length="50" />
         </property>
         <property name="idMovie" type="java.lang.Integer">
             <column name="IdMovie" />

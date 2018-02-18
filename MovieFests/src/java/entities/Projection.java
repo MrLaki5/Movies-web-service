@@ -1,5 +1,5 @@
 package entities;
-// Generated Feb 14, 2018 12:46:36 PM by Hibernate Tools 4.3.1
+// Generated Feb 18, 2018 8:22:58 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -14,19 +14,19 @@ public class Projection  implements java.io.Serializable {
      private Integer version;
      private Integer idMovie;
      private Integer idHall;
-     private Integer hour;
      private Date date;
      private String status;
+     private Integer price;
 
     public Projection() {
     }
 
-    public Projection(Integer idMovie, Integer idHall, Integer hour, Date date, String status) {
+    public Projection(Integer idMovie, Integer idHall, Date date, String status, Integer price) {
        this.idMovie = idMovie;
        this.idHall = idHall;
-       this.hour = hour;
        this.date = date;
        this.status = status;
+       this.price = price;
     }
    
     public Integer getIdProjection() {
@@ -57,13 +57,6 @@ public class Projection  implements java.io.Serializable {
     public void setIdHall(Integer idHall) {
         this.idHall = idHall;
     }
-    public Integer getHour() {
-        return this.hour;
-    }
-    
-    public void setHour(Integer hour) {
-        this.hour = hour;
-    }
     public Date getDate() {
         return this.date;
     }
@@ -77,6 +70,13 @@ public class Projection  implements java.io.Serializable {
     
     public void setStatus(String status) {
         this.status = status;
+    }
+    public Integer getPrice() {
+        return this.price;
+    }
+    
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
 

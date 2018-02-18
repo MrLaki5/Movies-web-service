@@ -1,5 +1,5 @@
 package entities;
-// Generated Feb 14, 2018 12:46:36 PM by Hibernate Tools 4.3.1
+// Generated Feb 18, 2018 8:22:58 PM by Hibernate Tools 4.3.1
 
 
 
@@ -10,13 +10,13 @@ public class Galery  implements java.io.Serializable {
 
 
      private Integer idG;
-     private byte[] picture;
+     private String picture;
      private Integer idMovie;
 
     public Galery() {
     }
 
-    public Galery(byte[] picture, Integer idMovie) {
+    public Galery(String picture, Integer idMovie) {
        this.picture = picture;
        this.idMovie = idMovie;
     }
@@ -28,11 +28,11 @@ public class Galery  implements java.io.Serializable {
     public void setIdG(Integer idG) {
         this.idG = idG;
     }
-    public byte[] getPicture() {
+    public String getPicture() {
         return this.picture;
     }
     
-    public void setPicture(byte[] picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
     public Integer getIdMovie() {

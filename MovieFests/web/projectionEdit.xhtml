@@ -43,7 +43,7 @@
                                         <f:selectItems  value="#{adminController.allMovies}" var="elem" itemLabel="#{elem.movie.name}, #{elem.movie.year}" itemValue="#{elem.idMovie}"/>
                                     </p:selectOneMenu>
                                     <p:outputLabel for="price" value="Price:"/>
-                                    <p:inputText id="price" value="#{adminController.price}"/>                                   
+                                    <p:inputText id="price" value="#{adminController.currEditProj.projection.price}"/>                                   
                                     <p:outputLabel for="popup1" value="Time:"/>
                                     <p:calendar id="popup1" value="#{adminController.currEditProj.projection.date}" pattern="MM/dd/yyyy HH:mm:ss"/>                                   
                                     <p:outputLabel for="location" value="Location:"/>

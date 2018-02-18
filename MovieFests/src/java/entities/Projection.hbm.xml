@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Feb 14, 2018 12:46:37 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Feb 18, 2018 8:22:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entities.Projection" table="Projection" catalog="MovieFests">
         <id name="idProjection" type="java.lang.Integer">
@@ -17,14 +17,14 @@
         <property name="idHall" type="java.lang.Integer">
             <column name="IdHall" />
         </property>
-        <property name="hour" type="java.lang.Integer">
-            <column name="Hour" />
-        </property>
-        <property name="date" type="date">
-            <column name="Date" length="10" />
+        <property name="date" type="timestamp">
+            <column name="Date" length="19" />
         </property>
         <property name="status" type="string">
             <column name="Status" length="20" />
+        </property>
+        <property name="price" type="java.lang.Integer">
+            <column name="Price" />
         </property>
     </class>
 </hibernate-mapping>

@@ -1,5 +1,5 @@
 package entities;
-// Generated Feb 14, 2018 12:46:36 PM by Hibernate Tools 4.3.1
+// Generated Feb 18, 2018 8:22:58 PM by Hibernate Tools 4.3.1
 
 
 
@@ -11,7 +11,7 @@ public class Movie  implements java.io.Serializable {
 
      private Integer idMovie;
      private String name;
-     private byte[] picture;
+     private String picture;
      private Integer year;
      private String about;
      private String director;
@@ -24,7 +24,7 @@ public class Movie  implements java.io.Serializable {
     public Movie() {
     }
 
-    public Movie(String name, byte[] picture, Integer year, String about, String director, Integer length, String country, String imdb, String tomato, String youtube) {
+    public Movie(String name, String picture, Integer year, String about, String director, Integer length, String country, String imdb, String tomato, String youtube) {
        this.name = name;
        this.picture = picture;
        this.year = year;
@@ -51,11 +51,11 @@ public class Movie  implements java.io.Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public byte[] getPicture() {
+    public String getPicture() {
         return this.picture;
     }
     
-    public void setPicture(byte[] picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
     public Integer getYear() {

@@ -42,6 +42,7 @@ Contributor(s):
 <hibernate-reverse-engineering>
   <schema-selection match-catalog="MovieFests"/>
   <table-filter match-name="Projection"/>
+  <table-filter match-name="Actor"/>
   <table-filter match-name="User"/>
   <table-filter match-name="Movie"/>
   <table-filter match-name="OnFest"/>

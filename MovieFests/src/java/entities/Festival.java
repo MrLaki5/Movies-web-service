@@ -1,5 +1,5 @@
 package entities;
-// Generated Feb 14, 2018 12:46:36 PM by Hibernate Tools 4.3.1
+// Generated Feb 18, 2018 8:22:58 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -14,14 +14,18 @@ public class Festival  implements java.io.Serializable {
      private Date dateFrom;
      private Date dateTo;
      private String name;
+     private String info;
+     private Integer ticketNum;
 
     public Festival() {
     }
 
-    public Festival(Date dateFrom, Date dateTo, String name) {
+    public Festival(Date dateFrom, Date dateTo, String name, String info, Integer ticketNum) {
        this.dateFrom = dateFrom;
        this.dateTo = dateTo;
        this.name = name;
+       this.info = info;
+       this.ticketNum = ticketNum;
     }
    
     public Integer getIdFest() {
@@ -51,6 +55,20 @@ public class Festival  implements java.io.Serializable {
     
     public void setName(String name) {
         this.name = name;
+    }
+    public String getInfo() {
+        return this.info;
+    }
+    
+    public void setInfo(String info) {
+        this.info = info;
+    }
+    public Integer getTicketNum() {
+        return this.ticketNum;
+    }
+    
+    public void setTicketNum(Integer ticketNum) {
+        this.ticketNum = ticketNum;
     }
 
 

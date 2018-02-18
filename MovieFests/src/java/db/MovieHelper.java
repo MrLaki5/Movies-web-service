@@ -5,7 +5,9 @@
  */
 package db;
 
+import entities.Actor;
 import entities.Festival;
+import entities.Galery;
 import entities.Movie;
 import entities.User;
 import java.io.Serializable;
@@ -70,6 +72,22 @@ public class MovieHelper implements Serializable{
         session=HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.save(movie);
+        session.getTransaction().commit();
+    }
+    
+    public void saveActor(Actor actor){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(actor);
+        session.getTransaction().commit();
+    }
+    
+    public void saveGalery(Galery galery){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(galery);
         session.getTransaction().commit();
     }
 }

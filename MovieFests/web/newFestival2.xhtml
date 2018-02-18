@@ -42,7 +42,7 @@
                                     <p:selectOneMenu id="movie" value="#{adminController.movieForProjection}" style="width:125px" filter="true" filterMatchMode="startsWith">
                                         <f:selectItems  value="#{adminController.allMovies}" var="elem" itemLabel="#{elem.movie.name}, #{elem.movie.year}" itemValue="#{elem.idMovie}"/>
                                     </p:selectOneMenu>
-                                    <h:commandLink value="Create new movie" class="text-primary"/>
+                                    <h:commandLink value="Create new movie" action="#{adminController.goNewMovieFromFest()}" class="text-primary"/>
                                     <br/>
                                     <p:outputLabel for="price" value="Price:"/>
                                     <p:inputText id="price" value="#{adminController.price}"/>                                   

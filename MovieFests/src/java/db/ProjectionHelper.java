@@ -133,7 +133,7 @@ public class ProjectionHelper implements Serializable{
         }
     }
     
-    public void updatePriceInProjection(int idProj, int price){                         //TODO ADD PRICE
+    public void updatePriceInProjection(int idProj, int price){                        
         try{            
             Session session=null;
             session=HibernateUtil.getSessionFactory().getCurrentSession();
@@ -141,7 +141,7 @@ public class ProjectionHelper implements Serializable{
            
             Query q=session.createQuery("from Projection as res where res.idProjection="+idProj);
             Projection projection=(Projection) q.uniqueResult();
-            
+            projection.setPrice(price);
             session.saveOrUpdate(projection);
             session.getTransaction().commit();
         }

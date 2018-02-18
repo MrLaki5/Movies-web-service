@@ -16,7 +16,9 @@ import db.MovieHelper;
 import db.ProjectionHelper;
 import db.ReservationHelper;
 import db.UserHelper;
+import entities.Actor;
 import entities.Festival;
+import entities.Galery;
 import entities.Hall;
 import entities.Location;
 import entities.Movie;
@@ -440,7 +442,7 @@ public class AdminController {
     }
     
     public String thirdStepFestAdd(){
-        Festival newFest=new Festival(StartDate, EndDate, FestivalName);
+        Festival newFest=new Festival(StartDate, EndDate, FestivalName, FestInfo, TicketNum);
         new FestivalHelper().saveFestival(newFest);
         LocationHelper lp=new LocationHelper();
         ProjectionHelper pp=new ProjectionHelper();
@@ -455,7 +457,7 @@ public class AdminController {
             lp.saveOnLocation(onLocation);
         }
         for (ProjElem projection : projections) {
-            Projection pro=new Projection(projection.getMovie().getMovie().getIdMovie(), projection.getLocation().getIdHall(), 0, projection.getTime(), "on");
+            Projection pro=new Projection(projection.getMovie().getMovie().getIdMovie(), projection.getLocation().getIdHall(), projection.getTime(), "on", projection.getPrice());
             pro.setVersion(0);
             pp.saveProjection(pro);
             OnFest onFest=new OnFest(new OnFestId(newFest.getIdFest(), pro.getIdProjection()));
@@ -520,8 +522,8 @@ public class AdminController {
                 }
             }
         }
-        if(1==0){
-            EditProjErr="Price can not be zero";        //TODO add price check
+        if(currEditProj.getProjection().getPrice()==0){
+            EditProjErr="Price can not be zero";       
             return "";
         }
         
@@ -532,6 +534,7 @@ public class AdminController {
         pp.updateLocationInProjection(currEditProj.getProjection().getIdProjection(), currEditProj.getLocation());
         currEditProj.setMovie(movie);
         pp.updateMovieInProjection(currEditProj.getProjection().getIdProjection(), currEditProj.getMovie().getIdMovie());
+        pp.updatePriceInProjection(currEditProj.getProjection().getIdProjection(), currEditProj.getProjection().getPrice());
         pp.updateVersionInProjection(currEditProj.getProjection().getIdProjection());
         return goFestEdit();
     }
@@ -545,12 +548,14 @@ public class AdminController {
     }
     
     public String saveEditFest(){
-        if(UFest.getFest().getName().equals("")){                               //TODO ADD TICKETS AND INFO
+        if(UFest.getFest().getName().equals("") || UFest.getFest().getInfo().equals("") || UFest.getFest().getTicketNum()==0){                               
             EditFestErr="All fields must be set";
             return "";
         }
         FestivalHelper fh=new FestivalHelper();
         fh.updateNameInFestival(UFest.getFest().getIdFest(), UFest.getFest().getName());
+        fh.updateInfoINFest(UFest.getFest().getIdFest(), UFest.getFest().getInfo());
+        fh.updateTicketNumINFest(UFest.getFest().getIdFest(), UFest.getFest().getTicketNum());
         return "festivalBrowsing?faces-redirect=true";
     }
     
@@ -562,7 +567,7 @@ public class AdminController {
         }
 
         if(MovieNewName.equals("") || MovieYear<1900 || newMovie.getDirector().equals("") || newMovie.getCountry().equals("") || newMovie.getAbout().equals("")
-                || newMovie.getLength()==0 || actors.size()==0){
+                || newMovie.getLength()==0 || actors.isEmpty() || images.isEmpty()){
             ErrorMovie="All fields must be set";
             return "";
         }
@@ -584,11 +589,40 @@ public class AdminController {
             }
         }
 
-        
+        newMovie.setPicture(imageName);
         newMovie.setName(MovieNewName);
         newMovie.setYear(MovieYear);
 
-        new MovieHelper().saveMovie(newMovie);
+        MovieHelper mp=new MovieHelper();
+        
+        mp.saveMovie(newMovie);
+        
+        for (String actor : actors) {
+            mp.saveActor(new Actor(actor, newMovie.getIdMovie()));
+        }
+        
+        for (UploadedFile image : images) {
+            
+            imageName="";        
+            if(!image.getFileName().equals("")){
+                String filename = "2"; 
+                String extension = image.getContentType().split("/")[1];
+                try {
+                    Path temp=Paths.get(AdminController.image_path);
+                    Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
+                    InputStream input = image.getInputstream();
+                    Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
+                    String []nizStr=file1.toString().split("/");
+                    imageName=nizStr[nizStr.length-1];
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            
+            if(imageName.equals("")){
+                mp.saveGalery(new Galery(imageName, newMovie.getIdMovie()));
+            }
+        }
 
         if(rootB==1){
             return goNewFestival2Back();
@@ -914,6 +948,9 @@ public class AdminController {
     }
     
     public String formatDate(Date date){
+        if(date==null){
+            return "";
+        }
         SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return sdf.format(date);
     }

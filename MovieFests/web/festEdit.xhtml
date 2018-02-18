@@ -41,13 +41,13 @@
                                     <p:outputLabel for="festName" value="Festival name:"/>
                                     <p:inputText id="festName" value="#{adminController.UFest.fest.name}"/>
                                     <p:outputLabel for="ticketNum" value="Ticket number:"/>
-                                    <p:inputText id="ticketNum" value="#{adminController.ticketNum}"/>
+                                    <p:inputText id="ticketNum" value="#{adminController.UFest.fest.ticketNum}"/>
                                     <p:outputLabel for="popup1" value="Start:"/>
                                     <p:outputLabel id="popup1" value="#{adminController.formatDate(adminController.UFest.fest.dateFrom)}"/>
                                     <p:outputLabel for="popup2" value="End:"/>
                                     <p:outputLabel id="popup2" value="#{adminController.formatDate(adminController.UFest.fest.dateTo)}"/>
                                     <p:outputLabel for="festInfo" value="Info:"/>
-                                    <p:inputTextarea id="festInfo" value="#{adminController.festInfo}" rows="6" cols="33" />
+                                    <p:inputTextarea id="festInfo" value="#{adminController.UFest.fest.info}" rows="6" cols="33" />
                                 </h:panelGrid>
                             </div>
                         </div>

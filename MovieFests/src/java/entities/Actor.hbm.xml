@@ -3,16 +3,13 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 18, 2018 8:22:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="entities.Feedback" table="Feedback" catalog="MovieFests" optimistic-lock="version">
-        <id name="idRes" type="int">
-            <column name="IdRes" />
-            <generator class="assigned" />
+    <class name="entities.Actor" table="Actor" catalog="MovieFests" optimistic-lock="version">
+        <id name="idActor" type="java.lang.Integer">
+            <column name="IdActor" />
+            <generator class="identity" />
         </id>
-        <property name="rate" type="java.lang.Integer">
-            <column name="Rate" />
-        </property>
-        <property name="comment" type="string">
-            <column name="Comment" length="100" />
+        <property name="name" type="string">
+            <column name="Name" length="50" />
         </property>
         <property name="idMovie" type="java.lang.Integer">
             <column name="IdMovie" />
