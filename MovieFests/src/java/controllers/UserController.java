@@ -7,19 +7,29 @@ package controllers;
 
 import beans.FestivalWithProjections;
 import beans.ReservationWithRating;
+import beans.UltraFest;
 import db.FestivalHelper;
 import db.ReservationHelper;
 import entities.Feedback;
 import entities.Festival;
+import entities.Location;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.model.map.DefaultMapModel;
+import org.primefaces.model.map.LatLng;
+import org.primefaces.model.map.MapModel;
+import org.primefaces.model.map.Marker;
 
 /**
  *
@@ -42,6 +52,9 @@ public class UserController {
     private ReservationWithRating currElem;
     private String rateErr;
     
+    private UltraFest UFest;
+    private MapModel DestModel;
+    
     //CONSTRUCTOR===============
     
     public UserController(){
@@ -59,6 +72,12 @@ public class UserController {
         movieRate=0;
         movieComent="";
         return "rateMovie?faces-redirect=true";
+    }
+    
+    public String goFestDetails(Festival festival){
+        UFest=festivalHelper.getUltraFest(festival);
+        loadDestModel();
+        return "festivalDetails?faces-redirect=true";
     }
     
     //LOGICS==================
@@ -121,8 +140,48 @@ public class UserController {
         return "registrationUser?faces-redirect=true";
     }
     
+    public void loadDestModel(){
+        DestModel=new DefaultMapModel();
+        
+        for (Location festLocation : UFest.getFestLocations()) {
+            
+            String address=festLocation.getAdress()+" "+festLocation.getBuilding();
+            
+            try {
+                String request="http://maps.googleapis.com/maps/api/geocode/json?address="+URLEncoder.encode(address, "UTF-8")+"&sensor=false";
+                java.net.URL link=new java.net.URL(request);
+                java.net.URLConnection conn=link.openConnection();
+                java.io.BufferedReader in= new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                
+                
+                String inputLine;
+                StringBuilder output=new StringBuilder();
+                while((inputLine=in.readLine())!=null){
+                    output.append(inputLine);
+                }
+                
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            
+        }
+        
+        
+        
+        LatLng coord1 = new LatLng(36.879466, 30.667648);
+        DestModel.addOverlay(new Marker(coord1, "Konyaalti"));
+    }
+    
     //GETTERS AMD SETTERS===========
 
+    public UltraFest getUFest() {
+        return UFest;
+    }
+
+    public void setUFest(UltraFest UFest) {
+        this.UFest = UFest;
+    }
+    
     public Date getDateFrom() {
         return dateFrom;
     }
@@ -168,6 +227,14 @@ public class UserController {
     
     public Date getCurrentDate(){
         return new Date();
+    }
+
+    public MapModel getDestModel() {
+        return DestModel;
+    }
+
+    public void setDestModel(MapModel DestModel) {
+        this.DestModel = DestModel;
     }
 
     public List<beans.FestivalWithProjections> getFestivals(){
@@ -259,4 +326,5 @@ public class UserController {
         LoginController firstBean = (LoginController) elContext.getELResolver().getValue(elContext, null, "loginController");
         return firstBean.getUesrname();
     }
+    
 }
