@@ -26,42 +26,57 @@
                     <ui:include src = "templates/header.xhtml" />
                 </ui:insert> 
 
+                
+                <div class="container-fluid" align="center">                    
+                        <div class="row">
+                            <div class="col-md-12" style="height: 100px">
+                                <br/>
+                                <h1 class="h3 mb-3 font-weight-normal">Reservations:</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-1 col-md-10">
+                                
+                                <p:dataTable var="elem" value="#{userController.reservations}" paginator="true" rows="10" id="tableReserv">
+                                    <p:column headerText="Code">
+                                        <h:outputText class="text-success" value="#{elem.reservation.code}" rendered="#{userController.checkBoughtAndDone(elem)}"/>
+                                        <h:outputText value="#{elem.reservation.code}" rendered="#{!userController.checkBoughtAndDone(elem)}"/>
+                                    </p:column>
+                                    <p:column headerText="Number of cards">
+                                        <h:outputText value="#{elem.reservation.ticketNum}" />
+                                    </p:column>
 
-                <p:dataTable var="elem" value="#{userController.reservations}" paginator="true" rows="10" id="tableReserv">
-                    <p:column headerText="Code">
-                        <h:outputText class="text-success" value="#{elem.reservation.code}" rendered="#{userController.checkBoughtAndDone(elem)}"/>
-                        <h:outputText value="#{elem.reservation.code}" rendered="#{!userController.checkBoughtAndDone(elem)}"/>
-                    </p:column>
-                    <p:column headerText="Number of cards">
-                        <h:outputText value="#{elem.reservation.ticketNum}" />
-                    </p:column>
-
-                    <p:column headerText="Status">
-                        <h:outputText value="Bought" rendered="#{userController.checkIFBought(elem)}"/>
-                        <h:outputText value="Expired" rendered="#{userController.checkIfExpired(elem)}"/>
-                        <h:form>
-                            <h:commandLink value="Cancel reservation" class="text-primary" rendered="#{userController.checkCanBeCanceld(elem)}" action="#{userController.cancelRegistration(elem)}" id="cancelLink">
-                                <f:ajax render="tableReserv"/>
-                            </h:commandLink>
+                                    <p:column headerText="Status">
+                                        <h:outputText value="Bought" rendered="#{userController.checkIFBought(elem)}"/>
+                                        <h:outputText value="Expired" rendered="#{userController.checkIfExpired(elem)}"/>
+                                        <h:form>
+                                            <h:commandLink value="Cancel reservation" class="text-primary" rendered="#{userController.checkCanBeCanceld(elem)}" action="#{userController.cancelRegistration(elem)}" id="cancelLink">
+                                                <f:ajax render="tableReserv"/>
+                                            </h:commandLink>
 
 
-                        </h:form>
-                    </p:column>
+                                        </h:form>
+                                    </p:column>
 
-                    <p:column headerText="Movie">
-                        <h:outputText value="#{elem.movie.name}" />
-                    </p:column>
+                                    <p:column headerText="Movie">
+                                        <h:outputText value="#{elem.movie.name}" />
+                                    </p:column>
 
-                    <p:column headerText="Projection date">
-                        <h:outputText value="#{elem.projection.date}" />
-                    </p:column>
+                                    <p:column headerText="Projection date">
+                                        <h:outputText value="#{elem.projection.date}" />
+                                    </p:column>
 
-                    <p:column headerText="Rating">
-                        <h:form>
-                            <h:commandLink value="Rate" action="#{userController.goRateMovie(elem)}" class="text-primary" rendered="#{userController.checkReservationVal(elem)}"></h:commandLink>
-                        </h:form>
-                    </p:column>
-                </p:dataTable>
+                                    <p:column headerText="Rating">
+                                        <h:form>
+                                            <h:commandLink value="Rate" action="#{userController.goRateMovie(elem)}" class="text-primary" rendered="#{userController.checkReservationVal(elem)}"></h:commandLink>
+                                        </h:form>
+                                    </p:column>
+                                </p:dataTable>
+                                
+                            </div>
+                
+                        </div>
+                </div>
 
                 <ui:insert name = "foother" >
                    <ui:include src = "templates/foother.xhtml" />
