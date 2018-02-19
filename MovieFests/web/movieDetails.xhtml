@@ -27,7 +27,7 @@
                     <ui:include src = "templates/header.xhtml" />
                 </ui:insert> 
 
-                <h:form id="cont_form" enctype="multipart/form-data">
+                <h:form id="cont_form">
                     <div class="container-fluid" align="center">                    
                         <div class="row">
                             <div class="col-md-12" style="height: 100px">
@@ -94,7 +94,7 @@
                                         Projections                                
                                     </f:facet>
                                     #{elem.festival.name}, #{elem.location.building}, #{elem.projection.date}, #{elem.projection.price} 
-                                    <h:commandLink value="Reservation" class="text-primary" rendered="#{!userController.checkForExprBan()}"/>
+                                    <h:commandLink value="Reservation" class="text-primary" action="#{userController.goReservationProjection(elem)}" rendered="#{!userController.checkForExprBan()}"/>
                                 </p:dataList>
                             </div>
                             <div class="col-md-4">

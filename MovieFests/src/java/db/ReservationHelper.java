@@ -8,6 +8,7 @@ package db;
 import beans.ReservationWithRating;
 import beans.ReservationWithUser;
 import entities.Feedback;
+import entities.Festival;
 import entities.Movie;
 import entities.Projection;
 import entities.Reservation;
@@ -168,6 +169,60 @@ public class ReservationHelper  implements Serializable{
             e.printStackTrace();
         }
         return number;
+    }
+    
+    public int RemainingReservations(String username, Festival festival){
+        int number=festival.getTicketNum();
+        
+        List<Projection> projections=new ProjectionHelper().getAllProjectionsForFestival(festival.getIdFest());
+        
+        
+        for (Projection projection : projections) {
+            try{
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("from Reservation as reg where reg.username='"+username+"' AND reg.idProjection="+projection.getIdProjection());
+            List<Reservation> rezervacije=(List<Reservation>) q.list();
+            tx.commit();
+            for (Reservation reservation : rezervacije) {
+                number-=reservation.getTicketNum();
+            }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return number;
+    }
+    
+    public boolean chekcIfCodeExsists(String code){
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Reservation as res where res.code='"+code+"'");
+            Reservation rezervacija=(Reservation) q.uniqueResult();
+            session.getTransaction().commit();
+            if(rezervacija==null){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public void seveReservation(Reservation reservation){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(reservation);
+        session.getTransaction().commit();
     }
     
 }

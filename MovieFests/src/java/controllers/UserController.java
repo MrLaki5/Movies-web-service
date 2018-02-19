@@ -6,6 +6,7 @@
 package controllers;
 
 import beans.FestivalWithProjections;
+import beans.ProjectionWithFestWithLocation;
 import beans.ProjectionWithMovie;
 import beans.ReservationWithRating;
 import beans.UltraFest;
@@ -18,6 +19,7 @@ import entities.Feedback;
 import entities.Festival;
 import entities.Galery;
 import entities.Location;
+import entities.Reservation;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.el.ELContext;
@@ -69,6 +72,13 @@ public class UserController {
     private List<Actor> actorsMovie=null;
     private int numberExpired=0;
     
+    private int reservationsLeft=0;
+    private ProjectionWithFestWithLocation currProjection=null;
+    private int reservTickets=0;
+    private String reservError="";
+    private String reservColor="";
+    
+    
     
     private String []colorsMarker={"blue", "red", "green", "yellow", "orange", "pink", "purple"};
     
@@ -109,6 +119,19 @@ public class UserController {
         imagesMovie=mp.getImagesForMovie(projection.getMovie().getIdMovie());
         numberExpired=new ReservationHelper().getNumberOfExpiredReservations(getUsername());
         return "movieDetails?faces-redirect=true";
+    }
+    
+    public String goMovieDetailsFromReservation(){
+        return "movieDetails?faces-redirect=true";
+    }
+    
+    public String goReservationProjection(ProjectionWithFestWithLocation projection){
+        reservError="";
+        reservColor="";
+        currProjection=projection;
+        reservTickets=0;
+        reservationsLeft=new ReservationHelper().RemainingReservations(getUsername(), projection.getFestival());
+        return "movieReservation?faces-redirect=true";
     }
     
     //LOGICS==================
@@ -176,6 +199,55 @@ public class UserController {
         feed.setIdRes(currElem.getReservation().getIdRes());
         new ReservationHelper().RateMovie(feed);
         return "registrationUser?faces-redirect=true";
+    }
+    
+    protected String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 10) {
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+    }
+    
+    public String submitReservation(){
+        if(reservTickets==0){
+            reservError="All fields must be set";
+            reservColor="text-danger";
+            return "";
+        }
+        if(reservTickets>reservationsLeft){
+            reservError="To much tickets set";
+            reservColor="text-danger";
+            return "";
+        }
+        String codeStr="";
+        boolean tempFlag=true;
+        ReservationHelper rp=new ReservationHelper();
+        while(tempFlag){
+            codeStr=getSaltString();
+            tempFlag=rp.chekcIfCodeExsists(codeStr);
+        }
+        String username=getUsername();
+        Reservation reservation=new Reservation(codeStr, new Date(), "Reserved", reservTickets, username, currProjection.getProjection().getIdProjection(), currProjection.getProjection().getStatus());
+        reservation.setVersion(currProjection.getProjection().getVersion());
+        rp.seveReservation(reservation);
+        
+        reservError="Reservation successful, your code: "+codeStr;
+        reservColor="text-success";
+        return "";
+    }
+    
+    public boolean checkIfReservationNotSuccess(){
+        if(reservColor.equals("text-success")){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
     
     public void loadDestModel(){
@@ -248,6 +320,46 @@ public class UserController {
     }
     
     //GETTERS AMD SETTERS===========
+
+    public String getReservError() {
+        return reservError;
+    }
+
+    public void setReservError(String reservError) {
+        this.reservError = reservError;
+    }
+
+    public String getReservColor() {
+        return reservColor;
+    }
+
+    public void setReservColor(String reservColor) {
+        this.reservColor = reservColor;
+    }
+
+    public int getReservTickets() {
+        return reservTickets;
+    }
+
+    public void setReservTickets(int reservTickets) {
+        this.reservTickets = reservTickets;
+    }
+
+    public int getReservationsLeft() {
+        return reservationsLeft;
+    }
+
+    public void setReservationsLeft(int reservationsLeft) {
+        this.reservationsLeft = reservationsLeft;
+    }
+
+    public ProjectionWithFestWithLocation getCurrProjection() {
+        return currProjection;
+    }
+
+    public void setCurrProjection(ProjectionWithFestWithLocation currProjection) {
+        this.currProjection = currProjection;
+    }
 
     public List<Galery> getImagesMovie() {
         return imagesMovie;

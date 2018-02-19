@@ -258,4 +258,22 @@ public class ProjectionHelper implements Serializable{
         return retList;
     }
     
+    public List<Projection> getAllProjectionsForFestival(int idFest){
+        
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select proj from Projection proj, Festival fest, OnFest ofest where "
+            + " proj.idProjection=ofest.id.idProjection AND ofest.id.idFest=fest.idFest AND fest.idFest="+idFest);
+            List<Projection> projections=(List<Projection>) q.list();
+            tx.commit();
+            
+            return projections;
+        }catch(Exception e){
+            e.printStackTrace();
+        }      
+        return null;
+    }
+    
 }
