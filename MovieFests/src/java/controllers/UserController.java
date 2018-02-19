@@ -31,6 +31,9 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  *
  * @author milanlazarevic
@@ -54,6 +57,8 @@ public class UserController {
     
     private UltraFest UFest;
     private MapModel DestModel;
+    private double centerLat;
+    private double centerLng;
     
     //CONSTRUCTOR===============
     
@@ -142,7 +147,9 @@ public class UserController {
     
     public void loadDestModel(){
         DestModel=new DefaultMapModel();
-        
+        centerLat=0;
+        centerLng=0;
+        int locCnt=0;
         for (Location festLocation : UFest.getFestLocations()) {
             
             String address=festLocation.getAdress()+" "+festLocation.getBuilding();
@@ -160,19 +167,41 @@ public class UserController {
                     output.append(inputLine);
                 }
                 
+                
+                JSONObject obj = new JSONObject(output.toString());
+                if (! obj.getString("status").equals("OK")){
+                    continue;
+                }
+ 
+                // get the first result
+                JSONObject res = obj.getJSONArray("results").getJSONObject(0);
+                //System.out.println(res.getString("formatted_address"));
+                JSONObject loc =
+                res.getJSONObject("geometry").getJSONObject("location");
+                //System.out.println("lat: " + loc.getDouble("lat") +
+                       // ", lng: " + loc.getDouble("lng"));
+                double latNew=loc.getDouble("lat");
+                double lngNew=loc.getDouble("lng");
+                centerLat+=latNew;
+                centerLng+=lngNew;
+                locCnt++;
+                DestModel.addOverlay(new Marker(new LatLng(latNew, lngNew), res.getString("formatted_address")));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
             
         }
-        
-        
-        
-        LatLng coord1 = new LatLng(36.879466, 30.667648);
-        DestModel.addOverlay(new Marker(coord1, "Konyaalti"));
+        if(locCnt!=0){
+            centerLat=centerLat/locCnt;
+            centerLng=centerLng/locCnt;
+        }
     }
     
     //GETTERS AMD SETTERS===========
+    
+    public String getCenterMapLocation(){
+        return centerLat+", "+centerLng;
+    }
 
     public UltraFest getUFest() {
         return UFest;

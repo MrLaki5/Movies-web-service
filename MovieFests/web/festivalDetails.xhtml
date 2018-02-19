@@ -78,7 +78,7 @@
                         <div class="row" style="height: 50px"></div>
                         <div class="row">
                             <f:view contentType="text/html">
-                                <p:gmap center="36.890257, 30.707417" zoom="10" type="HYBRID" style="width:100%;height:400px" model="#{userController.destModel}"/>
+                                <p:gmap center="#{userController.centerMapLocation}" zoom="10" type="HYBRID" style="width:100%;height:400px" model="#{userController.destModel}"/>
                             </f:view>
                         </div>
                         <div class="row">
