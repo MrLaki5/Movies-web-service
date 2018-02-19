@@ -54,13 +54,19 @@
                                     <p:outputLabel for="length" value="Length"/>
                                     <p:outputLabel id="length" value="#{userController.UMovie.movie.length}"/>
                                     <p:outputLabel for="country" value="Country:"/>
-                                    <p:outputLabel id="country" value="#{userController.UMovie.movie.country}"/>                                  
-                                    <p:outputLabel for="imdb" value="Imdb:"/>
-                                    <p:outputLabel id="imdb" value="#{userController.UMovie.movie.imdb}"/>                                   
-                                    <p:outputLabel for="tomato" value="Tomato:"/>
-                                    <p:outputLabel id="tomato" value="#{userController.UMovie.movie.tomato}"/>                                  
-                                    <p:outputLabel for="youtube" value="Youtube:"/>
-                                    <p:outputLabel id="youtube" value="#{userController.UMovie.movie.youtube}"/>  
+                                    <p:outputLabel id="country" value="#{userController.UMovie.movie.country}"/> 
+                                    
+                                    <h:outputLink class="text-primary" value="#{userController.UMovie.movie.imdb}" rendered="#{!userController.checkIfEmpty(userController.UMovie.movie.imdb)}">IMDB</h:outputLink>
+                                    <p:outputLabel id="imdb" value="" rendered="#{!userController.checkIfEmpty(userController.UMovie.movie.imdb)}"/>
+                                    
+                                    
+                                    <h:outputLink class="text-primary" value="#{userController.UMovie.movie.tomato}" rendered="#{!userController.checkIfEmpty(userController.UMovie.movie.tomato)}">Rotten tomatoes</h:outputLink>
+                                    <p:outputLabel id="tomato" value="" rendered="#{!userController.checkIfEmpty(userController.UMovie.movie.tomato)}"/>
+                                    
+                                  
+                                    <h:outputLink class="text-primary" value="#{userController.UMovie.movie.youtube}" rendered="#{!userController.checkIfEmpty(userController.UMovie.movie.youtube)}">
+                                        <p:graphicImage value="Images/SiteImg/youtubeImg.ico" style="width:120px ;height:80px"/>
+                                    </h:outputLink>
                                 </h:panelGrid>
                             </div>
                         </div>
@@ -88,7 +94,7 @@
                                         Projections                                
                                     </f:facet>
                                     #{elem.festival.name}, #{elem.location.building}, #{elem.projection.date}, #{elem.projection.price} 
-                                    <h:commandLink value="Reserve" class="text-primary"/>
+                                    <h:commandLink value="Reservation" class="text-primary" rendered="#{!userController.checkForExprBan()}"/>
                                 </p:dataList>
                             </div>
                             <div class="col-md-4">

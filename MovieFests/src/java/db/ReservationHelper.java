@@ -15,9 +15,11 @@ import entities.User;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -138,6 +140,34 @@ public class ReservationHelper  implements Serializable{
         }
         
         return tempList;
+    }
+    
+    public int getNumberOfExpiredReservations(String username){
+        int number=0;
+        
+        Date currDate=new Date();;
+        
+        Calendar calendar=Calendar.getInstance();
+        
+        try{
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("from Reservation as reg where reg.username='"+username+"'");
+            List<Reservation> rezervacije=(List<Reservation>) q.list();
+            tx.commit();
+            for (Reservation reservation : rezervacije) {
+                calendar.setTime(reservation.getDate());
+                calendar.add(Calendar.DAY_OF_MONTH, 2);
+                Date tempDate=calendar.getTime();
+                if(tempDate.before(currDate) && reservation.getType().equals("Reserved")){
+                    number++;
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return number;
     }
     
 }

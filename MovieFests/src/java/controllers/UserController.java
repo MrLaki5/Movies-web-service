@@ -67,6 +67,7 @@ public class UserController {
     private double centerLng;
     private List<Galery> imagesMovie=null;
     private List<Actor> actorsMovie=null;
+    private int numberExpired=0;
     
     
     private String []colorsMarker={"blue", "red", "green", "yellow", "orange", "pink", "purple"};
@@ -106,10 +107,18 @@ public class UserController {
         UMovie=mp.getUltraMovie(projection.getMovie().getIdMovie());
         actorsMovie=mp.getActorsForMovie(projection.getMovie().getIdMovie());
         imagesMovie=mp.getImagesForMovie(projection.getMovie().getIdMovie());
+        numberExpired=new ReservationHelper().getNumberOfExpiredReservations(getUsername());
         return "movieDetails?faces-redirect=true";
     }
     
     //LOGICS==================
+    
+    public boolean checkForExprBan(){
+        if(numberExpired>=3){
+            return true;
+        }
+        return false;
+    }
     
     public boolean checkReservationVal(ReservationWithRating elem){
         if(elem.getFeedback()==null && elem.getProjection().getDate().before(new Date()) && elem.getReservation().getType().equals("Bought")){
@@ -232,6 +241,10 @@ public class UserController {
             centerLat=centerLat/locCnt;
             centerLng=centerLng/locCnt;
         }
+    }
+    
+    public boolean checkIfEmpty(String str){
+        return "".equals(str);
     }
     
     //GETTERS AMD SETTERS===========
