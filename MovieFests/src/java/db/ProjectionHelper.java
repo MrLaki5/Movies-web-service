@@ -65,7 +65,7 @@ public class ProjectionHelper implements Serializable{
         List<ProjectionWithMovie> tempList= new ArrayList<>();
         
         Date currDate=new Date();
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr1=sdf.format(currDate);
         
         Session session=null;
@@ -226,7 +226,7 @@ public class ProjectionHelper implements Serializable{
         List<ProjectionWithFestWithLocation> retList=new ArrayList<>();
         
         Date currDate=new Date();
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr1=sdf.format(currDate);
         
         Session session=null;

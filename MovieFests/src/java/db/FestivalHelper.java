@@ -48,7 +48,7 @@ public class FestivalHelper implements Serializable{
         if(dateTo==null){
             dateTo=currDate;
         }
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr1=sdf.format(dateFrom);
         String dateStr2=sdf.format(dateTo);
         try{
@@ -82,7 +82,7 @@ public class FestivalHelper implements Serializable{
         session=HibernateUtil.getSessionFactory().getCurrentSession();
         List<Festival> festivali=null;
         Date currDate=new Date();
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr=sdf.format(currDate);
         try{
             org.hibernate.Transaction tx= session.beginTransaction();
@@ -121,7 +121,7 @@ public class FestivalHelper implements Serializable{
             dateTo=currDate;
         }
         LocationHelper locationHelper=new LocationHelper();
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr=sdf.format(currDate);
         String dateStr1=sdf.format(dateFrom);
         String dateStr2=sdf.format(dateTo);

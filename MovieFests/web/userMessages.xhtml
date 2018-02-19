@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+        <!-- Bootstrap core CSS -->
+        <link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <!-- Custom styles for this template -->
+        <link href="resources/css/modern-business.css" rel="stylesheet"/>
+
+        <title>Movie Fests</title>
+
+    </h:head>
+
+    <h:body>
+        
+        <c:choose>
+            <c:when test="#{loginController.isLoged==1}">
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12 text-center" style="height: 100px">
+                                <br/>
+                                <h1 class="h3 mb-3 font-weight-normal">Messages</h1>
+                            </div>
+                        </div>
+                        <h:form id="form_content">
+                            <div class="row"><div class="col-md-12" style="height: 20px"></div></div>
+                            <div class="row">
+                                <div class=" offset-md-1 col-md-10">
+                                    <p:dataTable var="elem" value="#{userController.resForMessage}" id="tableFest" paginator="true" rows="10">
+                                        <p:column headerText="Movie">
+                                            <h:outputText value="#{elem.movie.name}" />
+                                        </p:column>
+
+                                        <p:column headerText="Projection time">
+                                            <h:outputText value="#{elem.projection.date}" />
+                                        </p:column>
+
+                                        <p:column headerText="Reservation code">
+                                            <h:outputText value="#{elem.reservation.code}" />
+                                        </p:column>
+
+                                        <p:column headerText="Message">
+                                            <h:outputText value="#{userController.messageForUser(elem)}" />
+                                        </p:column>
+                                        
+                                        <p:column headerText="Action">                                    
+                                            <h:commandLink value="Hide" class="text-primary" action="#{userController.hideMessage(elem)}" id="hidelLink">
+                                                <f:ajax render="form_content"/>
+                                            </h:commandLink>                           
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </h:form>
+
+                    </div>
+
+                    <ui:insert name = "foother" >
+                        <ui:include src = "templates/foother.xhtml" />
+                    </ui:insert> 
+            </c:when>
+            <c:otherwise>
+             <ui:insert name = "header" >
+                 <ui:include src = "templates/error.xhtml" />
+             </ui:insert> 
+             </c:otherwise>
+         </c:choose>  
+
+    </h:body>
+</html>
+

@@ -36,7 +36,7 @@
                         </div>
                         <div class="row">
                             <div class="offset-md-1 col-md-10">
-                                
+                                <h:form id="cont_form"> 
                                 <p:dataTable var="elem" value="#{userController.reservations}" paginator="true" rows="10" id="tableReserv">
                                     <p:column headerText="Code">
                                         <h:outputText class="text-success" value="#{elem.reservation.code}" rendered="#{userController.checkBoughtAndDone(elem)}"/>
@@ -49,13 +49,14 @@
                                     <p:column headerText="Status">
                                         <h:outputText value="Bought" rendered="#{userController.checkIFBought(elem)}"/>
                                         <h:outputText value="Expired" rendered="#{userController.checkIfExpired(elem)}"/>
-                                        <h:form>
+                                        <h:outputText value="Canceled projection" rendered="#{userController.checkIfCanceledProjection(elem.projection)}"/>
+                                        
                                             <h:commandLink value="Cancel reservation" class="text-primary" rendered="#{userController.checkCanBeCanceld(elem)}" action="#{userController.cancelRegistration(elem)}" id="cancelLink">
-                                                <f:ajax render="tableReserv"/>
+                                                <f:ajax render="cont_form"/>
                                             </h:commandLink>
 
 
-                                        </h:form>
+                                        
                                     </p:column>
 
                                     <p:column headerText="Movie">
@@ -67,12 +68,12 @@
                                     </p:column>
 
                                     <p:column headerText="Rating">
-                                        <h:form>
+                                        
                                             <h:commandLink value="Rate" action="#{userController.goRateMovie(elem)}" class="text-primary" rendered="#{userController.checkReservationVal(elem)}"></h:commandLink>
-                                        </h:form>
+                                        
                                     </p:column>
                                 </p:dataTable>
-                                
+                                </h:form>
                             </div>
                 
                         </div>

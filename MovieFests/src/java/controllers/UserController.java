@@ -19,8 +19,8 @@ import entities.Feedback;
 import entities.Festival;
 import entities.Galery;
 import entities.Location;
+import entities.Projection;
 import entities.Reservation;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,8 +28,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -39,7 +37,6 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -78,7 +75,7 @@ public class UserController {
     private String reservError="";
     private String reservColor="";
     
-    
+    private List<ReservationWithRating> resForMessage=null;
     
     private String []colorsMarker={"blue", "red", "green", "yellow", "orange", "pink", "purple"};
     
@@ -92,6 +89,14 @@ public class UserController {
     }
     
     //REDIRECT METHODS==========
+    
+    public String goUserMessages(){
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        LoginController firstBean = (LoginController) elContext.getELResolver().getValue(elContext, null, "loginController");
+        firstBean.setCurrPage(3);
+        resForMessage=new ReservationHelper().getAllChangedReservations(getUsername());
+        return  "userMessages?faces-redirect=true";
+    }
     
     public String goRateMovie(ReservationWithRating elem){
         currElem=elem;
@@ -144,46 +149,101 @@ public class UserController {
     }
     
     public boolean checkReservationVal(ReservationWithRating elem){
+        if(checkIfCanceledProjection(elem.getProjection())){
+            return false;
+        }
         if(elem.getFeedback()==null && elem.getProjection().getDate().before(new Date()) && elem.getReservation().getType().equals("Bought")){
             return true;
         }
         return false;
     }
     
+    public boolean checkIfCanceledProjection(Projection proj){
+        if(proj.getStatus().equals("Canceled")){
+            return true;
+        }
+        return false;
+    }
+    
     public boolean checkBoughtAndDone(ReservationWithRating elem){
+        if(checkIfCanceledProjection(elem.getProjection())){
+            return false;
+        }
         if(elem.getReservation().getType().equals("Bought") && elem.getProjection().getDate().before(new Date())){
             return true;
         }
         return false;
     }
     
+    public boolean check48TimeLimit(Date date){
+        Date currDate=new Date();
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR, 48);
+        Date tempDate=calendar.getTime();
+        if(tempDate.before(currDate)){
+            return true;
+        }
+        return false;
+    }
+    
     public boolean checkCanBeCanceld(ReservationWithRating elem){
-        if((elem.getProjection().getDate().after(new Date()) || elem.getProjection().getDate().compareTo(new Date())==0) && elem.getReservation().getType().equals("Reserved")){
+        if(checkIfCanceledProjection(elem.getProjection())){
+            return false;
+        }
+        if(check48TimeLimit(elem.getReservation().getDate())){
+            return false;
+        }
+        if(elem.getReservation().getType().equals("Reserved")){
             return true;
         }
         return false;
     }
     
     public boolean checkIfExpired(ReservationWithRating elem){
-        if((elem.getProjection().getDate().before(new Date())) && elem.getReservation().getType().equals("Reserved")){
-            return true;
+        if(checkIfCanceledProjection(elem.getProjection())){
+            return false;
+        }
+        if(elem.getReservation().getType().equals("Reserved")){
+            if(check48TimeLimit(elem.getReservation().getDate())){
+                return true;
+            }
+            
         }
         return false;
     }
     
     public boolean checkIFBought(ReservationWithRating elem){
-    if(elem.getReservation().getType().equals("Bought")){
+        if(checkIfCanceledProjection(elem.getProjection())){
+            return false;
+        }
+        if(elem.getReservation().getType().equals("Bought")){
             return true;
         }
         return false;
     }
     
     public void cancelRegistration(ReservationWithRating elem){
-        if((elem.getProjection().getDate().after(new Date()) || elem.getProjection().getDate().compareTo(new Date())==0) && elem.getReservation().getType().equals("Reserved")){
+        if(checkCanBeCanceld(elem)){
             String username=getUsername();
             if(username.equals(elem.getReservation().getUsername())){
                 new ReservationHelper().RemoveReservation(elem.getReservation().getIdRes());
             }
+        }
+    }
+    
+    //feedback=null
+    public String messageForUser(ReservationWithRating elem){
+        if(elem.getProjection().getStatus().equals("Canceled")){
+            if(elem.getReservation().getType().equals("Bought")){
+                return "Projection has been canceled, go to cashier to get your money";
+            }
+            else{
+                return "Projection has been canceled";
+            }
+        }
+        else{
+            return "Some changes have been made, projection is still up";
         }
     }
     
@@ -319,7 +379,20 @@ public class UserController {
         return "".equals(str);
     }
     
+    public void hideMessage(ReservationWithRating elem){
+        new ReservationHelper().UpdateReservationVersion(elem.getReservation().getIdRes(), elem.getProjection().getVersion());
+        resForMessage=new ReservationHelper().getAllChangedReservations(getUsername());       
+    }
+    
     //GETTERS AMD SETTERS===========
+
+    public List<ReservationWithRating> getResForMessage() {       
+        return resForMessage;
+    }
+
+    public void setResForMessage(List<ReservationWithRating> resForMessage) {
+        this.resForMessage = resForMessage;
+    }
 
     public String getReservError() {
         return reservError;
@@ -494,6 +567,8 @@ public class UserController {
             return sendList;
         }
     }
+    
+    
 
     public int getMovieRate() {
         return movieRate;

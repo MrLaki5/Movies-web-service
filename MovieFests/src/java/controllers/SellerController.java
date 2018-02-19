@@ -116,7 +116,13 @@ public class SellerController implements Serializable{
     
     public List<ProjectionWithMovie> getCurrProjections(){
         List<ProjectionWithMovie> tempList=new ProjectionHelper().getAllCurrProjectionsWMovie();
-        return tempList;
+        List<ProjectionWithMovie> retList=new ArrayList<>();
+        for (ProjectionWithMovie projectionWithMovie : tempList) {
+            if(!projectionWithMovie.getProjection().getStatus().equals("Canceled")){
+                retList.add(projectionWithMovie);
+            }
+        }
+        return retList;
     }
     
     public List<ReservationWithUser> getCurrReservations(){

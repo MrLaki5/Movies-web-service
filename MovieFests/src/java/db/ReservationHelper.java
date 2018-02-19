@@ -7,6 +7,8 @@ package db;
 
 import beans.ReservationWithRating;
 import beans.ReservationWithUser;
+import controllers.LoginController;
+import controllers.UserController;
 import entities.Feedback;
 import entities.Festival;
 import entities.Movie;
@@ -21,6 +23,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import javax.el.ELContext;
+import javax.faces.context.FacesContext;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -111,11 +115,29 @@ public class ReservationHelper  implements Serializable{
         }
     }
     
+    public void UpdateReservationVersion(Integer idRes, int newVersion){
+        try{            
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Reservation as res where res.idRes="+idRes);
+            Reservation rezervacija=(Reservation) q.uniqueResult();
+            rezervacija.setVersion(newVersion);
+            session.saveOrUpdate(rezervacija);
+            session.getTransaction().commit();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
     public List<ReservationWithUser> getAllCurrentReservations(){
         List<ReservationWithUser> tempList=new ArrayList<>();
-        
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        UserController firstBean = (UserController) elContext.getELResolver().getValue(elContext, null, "userController");
         Date currDate=new Date();
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr1=sdf.format(currDate);
         
         try{
@@ -124,12 +146,18 @@ public class ReservationHelper  implements Serializable{
             org.hibernate.Transaction tx= session.beginTransaction();
             
             Query q=session.createQuery("select reg from Reservation reg, Projection proj where reg.idProjection=proj.idProjection AND proj.date>='"+dateStr1+"' AND "
-                    + " reg.type='Reserved'");
+                    + " reg.type='Reserved' AND proj.status='on'");
             List<Reservation> rezervacije=(List<Reservation>) q.list();
             tx.commit();
             
             for (Iterator<Reservation> iterator = rezervacije.iterator(); iterator.hasNext();) {
                 Reservation next = iterator.next();
+                
+                
+                if(firstBean.check48TimeLimit(next.getDate())){
+                    continue;
+                }
+                
                 
                 User user=new UserHelper().getUserById(next.getUsername());
                 
@@ -223,6 +251,35 @@ public class ReservationHelper  implements Serializable{
         session.beginTransaction();
         session.save(reservation);
         session.getTransaction().commit();
+    }
+    
+    public List<ReservationWithRating> getAllChangedReservations(String username){
+        List<ReservationWithRating> retList=new ArrayList<ReservationWithRating>();
+        
+        Date currDate=new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateStr1=sdf.format(currDate);
+        
+        try{
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select reg from Reservation reg, Projection proj where reg.username='"+username+"' "
+                    + " AND reg.idProjection=proj.idProjection AND reg.version!=proj.version AND proj.date>='"+dateStr1+"'");
+            List<Reservation> rezervacije=(List<Reservation>) q.list();
+            tx.commit();
+            
+            for (Iterator<Reservation> iterator = rezervacije.iterator(); iterator.hasNext();) {
+                Reservation next = iterator.next();
+                Projection projection=new ProjectionHelper().getProjectionById(next.getIdProjection());
+                Movie movie=new MovieHelper().getMovieById(projection.getIdMovie());
+                retList.add(new ReservationWithRating(next, null, movie, projection));               
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return retList; 
     }
     
 }
