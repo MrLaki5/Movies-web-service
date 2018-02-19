@@ -5,6 +5,8 @@
  */
 package db;
 
+import beans.ProjectionWithFestWithLocation;
+import beans.UltraMovie;
 import entities.Actor;
 import entities.Festival;
 import entities.Galery;
@@ -53,7 +55,7 @@ public class MovieHelper implements Serializable{
     }
     
     public List<Movie> getAllMovies(){
-    Session session=null;
+        Session session=null;
         session=HibernateUtil.getSessionFactory().getCurrentSession();
         List<Movie> movies=null;
         try{
@@ -89,5 +91,41 @@ public class MovieHelper implements Serializable{
         session.beginTransaction();
         session.save(galery);
         session.getTransaction().commit();
+    }
+    
+    public UltraMovie getUltraMovie(int idMovie){
+        Movie movie=getMovieById(idMovie);
+        List<ProjectionWithFestWithLocation> locations=new ProjectionHelper().getAllCurrProjectionMovieLocationForMovie(idMovie);
+        return new UltraMovie(movie, locations);
+    }
+    
+    public List<Actor> getActorsForMovie(int idMovie){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        List<Actor> actors=null;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select act from Movie movie, Actor act where act.idMovie=movie.idMovie AND movie.idMovie="+idMovie);
+            actors=(List<Actor>) q.list();
+            tx.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return actors;
+    }
+    
+    public List<Galery> getImagesForMovie(int idMovie){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        List<Galery> images=null;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select gal from Movie movie, Galery gal where gal.idMovie=movie.idMovie AND movie.idMovie="+idMovie);
+            images=(List<Galery>) q.list();
+            tx.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return images;
     }
 }

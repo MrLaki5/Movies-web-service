@@ -95,6 +95,21 @@ public class FestivalHelper implements Serializable{
         return festivali;
     }
     
+    public List<Festival> getFestivalOfProjection(int idProjection){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        List<Festival> festival=null;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select fest from Festival fest, Projection proj, OnFest ofest where fest.idFest=ofest.id.idFest AND proj.idProjection=ofest.id.idProjection AND proj.idProjection="+idProjection);
+            festival=(List<Festival>) q.list();
+            tx.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return festival;
+    }
+    
     public List<FestivalWithProjections> getFestivalsAndProjections(String movieName, Date dateFrom, Date dateTo){
         Session session=null;
         List<FestivalWithProjections> festivali=null;

@@ -6,12 +6,17 @@
 package controllers;
 
 import beans.FestivalWithProjections;
+import beans.ProjectionWithMovie;
 import beans.ReservationWithRating;
 import beans.UltraFest;
+import beans.UltraMovie;
 import db.FestivalHelper;
+import db.MovieHelper;
 import db.ReservationHelper;
+import entities.Actor;
 import entities.Feedback;
 import entities.Festival;
+import entities.Galery;
 import entities.Location;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -56,11 +61,15 @@ public class UserController {
     private String rateErr;
     
     private UltraFest UFest;
+    private UltraMovie UMovie;
     private MapModel DestModel;
     private double centerLat;
     private double centerLng;
+    private List<Galery> imagesMovie=null;
+    private List<Actor> actorsMovie=null;
     
-    String []colorsMarker={"blue", "red", "green", "yellow", "orange", "pink", "purple"};
+    
+    private String []colorsMarker={"blue", "red", "green", "yellow", "orange", "pink", "purple"};
     
     //CONSTRUCTOR===============
     
@@ -85,6 +94,19 @@ public class UserController {
         UFest=festivalHelper.getUltraFest(festival);
         loadDestModel();
         return "festivalDetails?faces-redirect=true";
+    }
+    
+    public String goFestDetailsFromMovie(){
+        return "festivalDetails?faces-redirect=true";
+    }
+    
+    
+    public String goMovieDetails(ProjectionWithMovie projection){
+        MovieHelper mp=new MovieHelper();
+        UMovie=mp.getUltraMovie(projection.getMovie().getIdMovie());
+        actorsMovie=mp.getActorsForMovie(projection.getMovie().getIdMovie());
+        imagesMovie=mp.getImagesForMovie(projection.getMovie().getIdMovie());
+        return "movieDetails?faces-redirect=true";
     }
     
     //LOGICS==================
@@ -213,6 +235,30 @@ public class UserController {
     }
     
     //GETTERS AMD SETTERS===========
+
+    public List<Galery> getImagesMovie() {
+        return imagesMovie;
+    }
+
+    public void setImagesMovie(List<Galery> imagesMovie) {
+        this.imagesMovie = imagesMovie;
+    }
+
+    public List<Actor> getActorsMovie() {
+        return actorsMovie;
+    }
+
+    public void setActorsMovie(List<Actor> actorsMovie) {
+        this.actorsMovie = actorsMovie;
+    }
+
+    public UltraMovie getUMovie() {
+        return UMovie;
+    }
+
+    public void setUMovie(UltraMovie UMovie) {
+        this.UMovie = UMovie;
+    }
     
     public String getCenterMapLocation(){
         return centerLat+", "+centerLng;

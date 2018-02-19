@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <!-- Bootstrap core CSS -->
+        <link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <!-- Custom styles for this template -->
+        <link href="resources/css/modern-business.css" rel="stylesheet"/>
+
+        <title>Movie Fests</title>
+
+    </h:head>
+
+    <h:body>  
+
+        <c:choose>
+            <c:when test="#{loginController.isLoged==1}">
+                
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
+
+                <h:form id="cont_form" enctype="multipart/form-data">
+                    <div class="container-fluid" align="center">                    
+                        <div class="row">
+                            <div class="col-md-12" style="height: 100px">
+                                <br/>
+                                <h1 class="h3 mb-3 font-weight-normal">Movie details:</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-5 col-md-2">
+                                <p:graphicImage value="Images/#{userController.UMovie.movie.picture}" style="width:90px ;height:150px"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                    <p:outputLabel for="movieName" value="Movie name:"/>
+                                    <p:outputLabel id="movieName" value="#{userController.UMovie.movie.name}"/>
+                                    <p:outputLabel for="movieYear" value="Movie year:"/>
+                                    <p:outputLabel id="movieYear" value="#{userController.UMovie.movie.year}"/>                                   
+                                    <p:outputLabel for="aboutInf" value="About:"/>
+                                    <p:inputTextarea id="aboutInf" value="#{userController.UMovie.movie.about}" disabled="true" rows="6" cols="33" />
+                                    <p:outputLabel for="director" value="Director:"/>
+                                    <p:outputLabel id="director" value="#{userController.UMovie.movie.director}"/>
+                                    <p:outputLabel for="length" value="Length"/>
+                                    <p:outputLabel id="length" value="#{userController.UMovie.movie.length}"/>
+                                    <p:outputLabel for="country" value="Country:"/>
+                                    <p:outputLabel id="country" value="#{userController.UMovie.movie.country}"/>                                  
+                                    <p:outputLabel for="imdb" value="Imdb:"/>
+                                    <p:outputLabel id="imdb" value="#{userController.UMovie.movie.imdb}"/>                                   
+                                    <p:outputLabel for="tomato" value="Tomato:"/>
+                                    <p:outputLabel id="tomato" value="#{userController.UMovie.movie.tomato}"/>                                  
+                                    <p:outputLabel for="youtube" value="Youtube:"/>
+                                    <p:outputLabel id="youtube" value="#{userController.UMovie.movie.youtube}"/>  
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="height: 50px">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="offset-md-4 col-md-2">
+                                <p:galleria value="#{userController.imagesMovie}" var="image" panelWidth="500"  panelHeight="313" showCaption="true">
+                                    <p:graphicImage style="width:500px ;height:313px" title="Movie gallery" value="#{FacesContext.getCurrentInstance().getExternalContext()}/Images/#{image.picture}"/>
+                                </p:galleria>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="height: 50px">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="offset-md-2 col-md-4">
+                                <p:dataList value="#{userController.UMovie.projections}" var="elem" type="ordered" paginator="true" rows="5">
+                                    <f:facet name="header">
+                                        Projections                                
+                                    </f:facet>
+                                    #{elem.festival.name}, #{elem.location.building}, #{elem.projection.date}, #{elem.projection.price} 
+                                    <h:commandLink value="Reserve" class="text-primary"/>
+                                </p:dataList>
+                            </div>
+                            <div class="col-md-4">
+                                <p:dataList value="#{userController.actorsMovie}" var="elem" type="ordered" paginator="true" rows="5">
+                                    <f:facet name="header">
+                                        Actors                               
+                                    </f:facet>
+                                    #{elem.name}
+                                </p:dataList>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="height: 50px">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{userController.goFestDetailsFromMovie()}" value="Back"/>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+
+                <ui:insert name = "foother" >
+                    <ui:include src = "templates/foother.xhtml" />
+                </ui:insert> 
+                
+            </c:when>
+            <c:otherwise>
+                <ui:insert name="header">
+                    <ui:include src="templates/error.xhtml"/>
+                </ui:insert>
+            </c:otherwise>
+        </c:choose>
+    </h:body>
+</html>
+
+
+

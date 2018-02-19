@@ -67,9 +67,7 @@
                                     <f:facet name="header">
                                         Projections                                
                                     </f:facet>
-                                    <h:form>
-                                        <h:commandLink value="#{elem.movie.name}" class="text-primary"/>                                      
-                                    </h:form>
+                                    <h:commandLink action="#{userController.goMovieDetails(elem)}" value="#{elem.movie.name}" class="text-primary"/>                                      
                                     #{elem.location.building}, #{adminController.formatDate(elem.projection.date)}                                    
                                     <p:outputLabel value="Canceled" rendered="#{adminController.checkIfCanceled(elem)}"/>                                                                                     
                                 </p:dataList>
@@ -83,8 +81,6 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12" style="height: 50px">
-                                <br/>
-                                <h:outputText class="text-danger" value="#{adminController.editFestErr}" id="errorMessage"/>
                             </div>
                         </div>
                         <div class="row">

@@ -615,7 +615,7 @@ public class AdminController {
                 }
             }
             
-            if(imageName.equals("")){
+            if(!imageName.equals("")){
                 mp.saveGalery(new Galery(imageName, newMovie.getIdMovie()));
             }
         }

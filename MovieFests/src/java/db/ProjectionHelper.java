@@ -5,6 +5,7 @@
  */
 package db;
 
+import beans.ProjectionWithFestWithLocation;
 import beans.ProjectionWithMovie;
 import entities.Festival;
 import entities.Hall;
@@ -219,6 +220,42 @@ public class ProjectionHelper implements Serializable{
         catch(Exception e){
             e.printStackTrace();
         }
+    }
+    
+    public List<ProjectionWithFestWithLocation> getAllCurrProjectionMovieLocationForMovie(int idMovie){
+        List<ProjectionWithFestWithLocation> retList=new ArrayList<>();
+        
+        Date currDate=new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr1=sdf.format(currDate);
+        
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select proj from Projection proj where "
+            + " proj.date>='"+dateStr1+"' AND proj.idMovie="+idMovie+" AND proj.status='on'");
+            List<Projection> projections=(List<Projection>) q.list();
+            tx.commit();
+            
+            FestivalHelper fp=new FestivalHelper();
+            
+            for (Iterator<Projection> iterator = projections.iterator(); iterator.hasNext();) {
+                Projection next = iterator.next();
+                
+                List<Festival> festival=fp.getFestivalOfProjection(next.getIdProjection());
+                
+                for (Festival festival1 : festival) {
+                    Location location=new LocationHelper().getLocationFromProjection(next);               
+                    retList.add(new ProjectionWithFestWithLocation(next, festival1, location));
+                }
+                
+            }          
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return retList;
     }
     
 }
