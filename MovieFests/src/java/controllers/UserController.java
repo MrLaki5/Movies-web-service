@@ -60,6 +60,8 @@ public class UserController {
     private double centerLat;
     private double centerLng;
     
+    String []colorsMarker={"blue", "red", "green", "yellow", "orange", "pink", "purple"};
+    
     //CONSTRUCTOR===============
     
     public UserController(){
@@ -156,19 +158,30 @@ public class UserController {
             
             try {
                 String request="http://maps.googleapis.com/maps/api/geocode/json?address="+URLEncoder.encode(address, "UTF-8")+"&sensor=false";
-                java.net.URL link=new java.net.URL(request);
-                java.net.URLConnection conn=link.openConnection();
-                java.io.BufferedReader in= new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                //java.net.URL link=new java.net.URL(request);
+                //java.net.URLConnection conn=link.openConnection();
+                //java.io.BufferedReader in= new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                
+                //new try
+                java.net.URL url = new java.net.URL(request);
+                // read from the URL
+                java.util.Scanner scan = new java.util.Scanner(url.openStream());
+                String str = new String();
+                while (scan.hasNext())
+                    str += scan.nextLine();
+                scan.close();
                 
                 
-                String inputLine;
-                StringBuilder output=new StringBuilder();
-                while((inputLine=in.readLine())!=null){
-                    output.append(inputLine);
-                }
+                //String inputLine;
+                //StringBuilder output=new StringBuilder();
+                //while((inputLine=in.readLine())!=null){
+                    //output.append(inputLine);
+                //}
                 
+                //in.close();
                 
-                JSONObject obj = new JSONObject(output.toString());
+                //JSONObject obj = new JSONObject(output.toString());
+                JSONObject obj = new JSONObject(str);
                 if (! obj.getString("status").equals("OK")){
                     continue;
                 }
@@ -185,7 +198,9 @@ public class UserController {
                 centerLat+=latNew;
                 centerLng+=lngNew;
                 locCnt++;
-                DestModel.addOverlay(new Marker(new LatLng(latNew, lngNew), res.getString("formatted_address")));
+                Marker tempMarker=new Marker(new LatLng(latNew, lngNew), res.getString("formatted_address"));
+                tempMarker.setIcon("http://maps.google.com/mapfiles/ms/icons/"+colorsMarker[locCnt%colorsMarker.length]+"-dot.png");
+                DestModel.addOverlay(tempMarker);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
