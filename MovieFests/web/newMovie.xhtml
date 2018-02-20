@@ -116,6 +116,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.goNewFestival2JSONBack()}" value="Back" rendered="#{adminController.rootB==2}"/>
                                 <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.goNewFestival2Back()}" value="Back" rendered="#{adminController.rootB==1}"/>
                                 &nbsp;
                                 <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.saveMovie()}" value="Save">

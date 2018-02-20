@@ -5,7 +5,10 @@
  */
 package controllers;
 
+import beans.FestivalWithLocations;
+import beans.LocElem;
 import beans.MovieEnc;
+import beans.ProjElem;
 import beans.ProjectionWithMovie;
 import beans.ReservationWithRating;
 import beans.UltraFest;
@@ -49,6 +52,8 @@ import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.primefaces.model.UploadedFile;
 import sun.misc.IOUtils;
 
@@ -64,103 +69,6 @@ public class AdminController {
 
     public static final String image_path="/Users/milanlazarevic/Desktop/movies-site-java-faces/MovieFests/web/Images";
     
-    public class LocElem{
-        private String location;
-        private String building;
-        private int idLok;
-        private int idHall;
-
-        public LocElem(String location, String building) {
-            this.location = location;
-            this.building = building;
-            this.idLok=-1;
-            this.idHall=-1;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
-
-        public String getBuilding() {
-            return building;
-        }
-
-        public void setBuilding(String building) {
-            this.building = building;
-        }   
-        
-        @Override
-        public String toString(){
-            return location+"_"+building;
-        }
-
-        public int getIdLok() {
-            return idLok;
-        }
-
-        public void setIdLok(int idLok) {
-            this.idLok = idLok;
-        }  
-
-        public int getIdHall() {
-            return idHall;
-        }
-
-        public void setIdHall(int idHall) {
-            this.idHall = idHall;
-        }
-    }
-    
-    public class ProjElem{
-        private MovieEnc movie;
-        private LocElem location;
-        private int price;
-        private Date time;
-
-        public ProjElem(MovieEnc movie, LocElem location, int price, Date time) {
-            this.movie = movie;
-            this.location = location;
-            this.price = price;
-            this.time = time;
-        }
-
-        public MovieEnc getMovie() {
-            return movie;
-        }
-
-        public void setMovie(MovieEnc movie) {
-            this.movie = movie;
-        }
-
-        public LocElem getLocation() {
-            return location;
-        }
-
-        public void setLocation(LocElem location) {
-            this.location = location;
-        }
-
-        public int getPrice() {
-            return price;
-        }
-
-        public void setPrice(int price) {
-            this.price = price;
-        }
-
-        public Date getTime() {
-            return time;
-        }
-
-        public void setTime(Date time) {
-            this.time = time;
-        }
-        
-    }
     
     private Map<String, String> nameMap=new HashMap<>();;
     private int tempFlag=0;
@@ -201,7 +109,43 @@ public class AdminController {
     private List<UploadedFile> images=null;
     private String ActorName="";
     
+    private UploadedFile jsonFestivalFile=null;
+    private String ErrorJsonFestival="";
+    private List<FestivalWithLocations> festivalsNewJSON=null;
+    private FestivalWithLocations currFestival=null;
+    private String currFestivalName="";
+    
     //REDIRECT
+    
+    public String goNewFestivalJSON(){
+        jsonFestivalFile=null;
+        ErrorJsonFestival="";
+        festivalsNewJSON=null;
+        locations=new ArrayList<>();
+        return "newJSONFestival?faces-redirect=true";
+    }
+    
+    public String goNewFestivalBackJSON(){
+        ErrorJsonFestival="";
+        return "newJSONFestival?faces-redirect=true";
+    }
+    
+    public String goNewFestival2JSON(){
+        MovieForProjection="";
+        SecondStepError="";
+        tempLock="";
+        Price=0;
+        locations=new ArrayList<>();
+        timeDate=null;
+        currFestival=festivalsNewJSON.get(0);
+        currFestivalName=currFestival.getFestival().getName();
+        return "newJSONFestival2?faces-redirect=true";
+    }
+    
+    public String goNewFestival2JSONBack(){
+        SecondStepError="";
+        return "newJSONFestival2?faces-redirect=true";
+    }
     
     public String goNewFestival(){
         FestivalName="";
@@ -298,6 +242,28 @@ public class AdminController {
         return "newMovie?faces-redirect=true";
     }
     
+    public String goNewMovieFromFestJSON(){
+        rootB=2;
+        actors=new ArrayList<>();
+        images=new ArrayList<>();
+        newMovie=new Movie();
+        newMovie=new Movie();
+        newMovie.setDirector("");
+        newMovie.setCountry("");
+        newMovie.setAbout("");
+        newMovie.setImdb("");
+        newMovie.setTomato("");
+        newMovie.setYoutube("");
+        newMovie.setLength(0);
+        ActorName="";
+        file=null;
+        ImageFile=null;
+        MovieYear=0;
+        ErrorMovie="";
+        MovieNewName="";
+        return "newMovie?faces-redirect=true";
+    }
+    
     //LOGICS
     
     public void addImageForGalerry(){
@@ -354,7 +320,7 @@ public class AdminController {
             return;
         }
         for (LocElem location : locations) {
-            if(location.building.equals(BuildingName) && location.location.equals(LocationName)){
+            if(location.getBuilding().equals(BuildingName) && location.getLocation().equals(LocationName)){
                 BuildingName="";
                 return;
             }
@@ -412,12 +378,66 @@ public class AdminController {
         timeDate=null;
     }
     
+    public void addProjectionJSON(){
+        LocElem tLock=null;
+        for (LocElem location : currFestival.getLocations()) {
+            if(location.toString().equals(tempLock)){
+                tLock=location;
+                break;
+            }
+        }
+        if(MovieForProjection.isEmpty() || tLock==null){
+            SecondStepError="All fields must be set";
+            return;
+        }
+        int idMovie=Integer.parseInt(MovieForProjection);
+        Movie movie=new MovieHelper().getMovieById(idMovie);
+        if(movie==null || Price==0){
+            SecondStepError="All fields must be set";
+            return;
+        }
+        if(timeDate.before(currFestival.getFestival().getDateFrom()) || timeDate.after(currFestival.getFestival().getDateTo())){
+            SecondStepError="Time of projection is not during time of festival";
+            return;
+        }
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(timeDate);
+        calendar.add(Calendar.MINUTE, movie.getLength());
+        Date projectionEnd = calendar.getTime();
+        for (ProjElem projection : currFestival.getProjections()) {         
+            if(tempLock.equals(projection.getLocation().toString())){           
+                calendar.setTime(projection.getTime());
+                calendar.add(Calendar.MINUTE, projection.getMovie().getMovie().getLength());
+                Date projectionEnd2=calendar.getTime();
+                
+                if(projection.getTime().after(timeDate) && projection.getTime().before(projectionEnd)){
+                    SecondStepError="Times crossed with another projection";
+                    return;
+                }
+                if(projectionEnd2.after(timeDate) && projectionEnd2.before(projectionEnd)){
+                    SecondStepError="Times crossed with another projection";
+                    return;
+                }
+            }
+        }
+        currFestival.getProjections().add(new ProjElem(new MovieEnc(movie), tLock, Price, timeDate));
+        MovieForProjection="";
+        SecondStepError="";
+        tempLock="";
+        Price=0;
+        timeDate=null;
+    }
+    
     public void removeLocation(LocElem temp){
         locations.remove(temp);
     }
     
     public void removeProjection(ProjElem temp){
         projections.remove(temp);
+    }
+    
+    public void removeProjectionJSON(ProjElem temp){
+        currFestival.getProjections().remove(temp);
     }
     
     public String firstStepFestAdd(){
@@ -439,6 +459,18 @@ public class AdminController {
         }
         SecondStepError="";
         return "newFestival3?faces-redirect=true";
+    }
+    
+    public String secondStepAddJSON(){
+        for (FestivalWithLocations festivalWithLocations : festivalsNewJSON) {
+            if(festivalWithLocations.getProjections().isEmpty()){
+                SecondStepError="There must be projections in fest "+festivalWithLocations.getFestival().getName();
+                return "";
+            }
+        }
+        
+        SecondStepError="";
+        return "newJSONFestival3?faces-redirect=true";
     }
     
     public String thirdStepFestAdd(){
@@ -477,6 +509,48 @@ public class AdminController {
         SecondStepError="";
         locations=new ArrayList<>();
         projections=new ArrayList<>();
+        return "festivalBrowsing?faces-redirect=true";
+    }
+    
+    public String thirdStepFestAddJSON(){
+        for (FestivalWithLocations newFest : festivalsNewJSON) {
+            new FestivalHelper().saveFestival(newFest.getFestival());
+            LocationHelper lp=new LocationHelper();
+            ProjectionHelper pp=new ProjectionHelper();
+            for (LocElem location : newFest.getLocations()) {
+                Location loc=new Location(location.getBuilding(), location.getLocation());
+                lp.saveLocation(loc);
+                Hall hall=new Hall(loc.getIdLok());
+                lp.saveHall(hall);
+                location.setIdLok(hall.getIdLok());
+                location.setIdHall(hall.getIdHall());
+                OnLocation onLocation=new OnLocation(new OnLocationId(newFest.getFestival().getIdFest(), loc.getIdLok()));
+                lp.saveOnLocation(onLocation);
+            }
+            for (ProjElem projection : newFest.getProjections()) {
+                Projection pro=new Projection(projection.getMovie().getMovie().getIdMovie(), projection.getLocation().getIdHall(), projection.getTime(), "on", 0, projection.getPrice());
+                pp.saveProjection(pro);
+                OnFest onFest=new OnFest(new OnFestId(newFest.getFestival().getIdFest(), pro.getIdProjection()));
+                pp.saveOnFest(onFest);
+            }
+        }      
+        FestivalName="";
+        LocationName="";
+        BuildingName="";
+        FestInfo="";
+        FirstStepError="";
+        Price=0;
+        TicketNum=0;
+        StartDate=null;
+        EndDate=null;
+        MovieForProjection="";
+        tempLock="";
+        timeDate=null;
+        SecondStepError="";
+        locations=new ArrayList<>();
+        projections=new ArrayList<>();
+        currFestival=null;
+        currFestivalName="";
         return "festivalBrowsing?faces-redirect=true";
     }
     
@@ -623,12 +697,117 @@ public class AdminController {
             return goNewFestival2Back();
         }
         else{
+            if(rootB==2){
+                return goNewFestival2JSONBack();
+            }
             return goNewMovie();
         }
         
     }
     
+    public String addJsonFestivalNew(){
+        try{
+            java.util.Scanner scan = new java.util.Scanner(jsonFestivalFile.getInputstream());
+            String str = new String();
+            while (scan.hasNext())
+                str += scan.nextLine();
+            scan.close();
+            
+            List<FestivalWithLocations> festivals=new ArrayList<>();
+            
+            JSONObject obj = new JSONObject(str);
+            JSONArray placesJSON=obj.getJSONArray("Locations");
+            for(int i=0; i<placesJSON.length();i++){
+                JSONArray locationsJSON=placesJSON.getJSONObject(i).getJSONArray("Location");
+                String place=placesJSON.getJSONObject(i).getString("Place");
+                for(int j=0; j<locationsJSON.length(); j++){
+                    JSONObject locationJSON=locationsJSON.getJSONObject(j);
+                    String building=locationJSON.getString("Name");
+                    locations.add(new LocElem(place, building));
+                }
+            }
+            
+            SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+            
+            JSONArray festivalsJSON=obj.getJSONArray("Festivals");
+            for(int i=0; i<festivalsJSON.length();i++){
+                JSONObject festivalJSON=festivalsJSON.getJSONObject(i);
+                
+                String fName=festivalJSON.getString("Festival");
+                Date fstartDate=sdf.parse(festivalJSON.getString("StartDate"));
+                Date fendDate=sdf.parse(festivalJSON.getString("EndDate"));
+                String fAbout=festivalJSON.getString("About");
+                
+                String fplace=festivalJSON.getString("Place");
+                
+                List<LocElem> tempFL=new ArrayList<>();
+                
+                for (LocElem tempLocation : locations) {
+                    if(tempLocation.getLocation().equals(fplace)){
+                        tempFL.add(tempLocation);
+                    }
+                }
+                
+                Festival trFest=new Festival(fstartDate, fendDate, fName, fAbout, 0);
+                
+                festivals.add(new FestivalWithLocations(trFest, tempFL));
+            }
+            festivalsNewJSON=festivals;
+            return goNewFestival2JSON();
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }
+        ErrorJsonFestival="Error in parsing file";
+        return "";
+    }
+    
+    public void onChangeCurrFestival(){
+        for (FestivalWithLocations festivalWithLocations : festivalsNewJSON) {
+            if(festivalWithLocations.getFestival().getName().equals(currFestivalName)){
+                currFestival=festivalWithLocations;
+                break;
+            }
+        }
+        MovieForProjection="";
+        tempLock="";
+        Price=0;
+        timeDate=null;
+    }
+    
     //GETTERS AND SETTERS
+
+    public String getCurrFestivalName() {
+        return currFestivalName;
+    }
+
+    public void setCurrFestivalName(String currFestivalName) {
+        this.currFestivalName = currFestivalName;
+    }
+
+    public FestivalWithLocations getCurrFestival() {
+        return currFestival;
+    }
+
+    public void setCurrFestival(FestivalWithLocations currFestival) {
+        this.currFestival = currFestival;
+    }
+
+    public String getErrorJsonFestival() {
+        return ErrorJsonFestival;
+    }
+
+    public void setErrorJsonFestival(String ErrorJsonFestival) {
+        this.ErrorJsonFestival = ErrorJsonFestival;
+    }
+
+    public UploadedFile getJsonFestivalFile() {
+        return jsonFestivalFile;
+    }
+
+    public void setJsonFestivalFile(UploadedFile jsonFestivalFile) {
+        this.jsonFestivalFile = jsonFestivalFile;
+    }
 
     public UploadedFile getImageFile() {
         return ImageFile;
@@ -877,6 +1056,16 @@ public class AdminController {
     public void setEditProjErr(String EditProjErr) {
         this.EditProjErr = EditProjErr;
     }
+
+    public List<FestivalWithLocations> getFestivalsNewJSON() {
+        return festivalsNewJSON;
+    }
+
+    public void setFestivalsNewJSON(List<FestivalWithLocations> festivalsNewJSON) {
+        this.festivalsNewJSON = festivalsNewJSON;
+    }
+    
+    
     
     public boolean checkIfCanceled(ProjectionWithMovie proj){
         

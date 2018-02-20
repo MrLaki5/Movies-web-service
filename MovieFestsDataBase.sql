@@ -12,7 +12,7 @@ CREATE TABLE Feedback
 (
 	IdRes                INTEGER NOT NULL,
 	Rate                 INTEGER NULL,
-	Comment              VARCHAR(100) NULL,
+	Comment              VARCHAR(200) NULL,
 	IdMovie              INTEGER NULL,
 	CONSTRAINT XPKFeedback PRIMARY KEY (IdRes)
 );
@@ -22,8 +22,8 @@ CREATE TABLE Festival
 	IdFest               INTEGER NOT NULL AUTO_INCREMENT,
 	DateFrom             DATETIME NULL,
 	DateTo               DATETIME NULL,
-	Name                 VARCHAR(20) NULL,
-	Info                 VARCHAR(100) NULL,
+	Name                 VARCHAR(100) NULL,
+	Info                 VARCHAR(200) NULL,
 	TicketNum            INTEGER NULL,
 	CONSTRAINT XPKFestival PRIMARY KEY (IdFest)
 )
@@ -32,7 +32,7 @@ CREATE TABLE Festival
 CREATE TABLE Galery
 (
 	IdG                  INTEGER NOT NULL AUTO_INCREMENT,
-	Picture              VARCHAR(50) NULL,
+	Picture              VARCHAR(100) NULL,
 	IdMovie              INTEGER NULL,
 	CONSTRAINT XPKGalery PRIMARY KEY (IdG)
 )
@@ -49,8 +49,8 @@ CREATE TABLE Hall
 CREATE TABLE Location
 (
 	IdLok                INTEGER NOT NULL AUTO_INCREMENT,
-	Building             VARCHAR(20) NULL,
-	Adress               VARCHAR(50) NULL,
+	Building             VARCHAR(100) NULL,
+	Adress               VARCHAR(100) NULL,
 	CONSTRAINT XPKLocation PRIMARY KEY (IdLok)
 )
  AUTO_INCREMENT = 1;
@@ -58,16 +58,16 @@ CREATE TABLE Location
 CREATE TABLE Movie
 (
 	IdMovie              INTEGER NOT NULL AUTO_INCREMENT,
-	Name                 VARCHAR(20) NULL,
-	Picture              VARCHAR(50) NULL,
+	Name                 VARCHAR(50) NULL,
+	Picture              VARCHAR(100) NULL,
 	Year                 INTEGER NULL,
-	About                VARCHAR(100) NULL,
+	About                VARCHAR(200) NULL,
 	Director             VARCHAR(50) NULL,
 	Length               INTEGER NULL,
 	Country              VARCHAR(30) NULL,
-	imdb                 VARCHAR(60) NULL,
-	tomato               VARCHAR(60) NULL,
-	youtube              VARCHAR(60) NULL,
+	imdb                 VARCHAR(100) NULL,
+	tomato               VARCHAR(100) NULL,
+	youtube              VARCHAR(100) NULL,
 	CONSTRAINT XPKMovie PRIMARY KEY (IdMovie)
 )
  AUTO_INCREMENT = 1;
@@ -119,7 +119,7 @@ CREATE TABLE User
 	Username             VARCHAR(20) NOT NULL,
 	Firstname            VARCHAR(20) NULL,
 	Lastname             VARCHAR(30) NULL,
-	Email                VARCHAR(50) NULL,
+	Email                VARCHAR(100) NULL,
 	Phone                VARCHAR(20) NULL,
 	Password             VARCHAR(12) NULL,
 	Type                 VARCHAR(20) NULL,
