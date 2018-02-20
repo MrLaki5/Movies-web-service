@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Feb 20, 2018 8:06:49 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated Feb 20, 2018 8:32:24 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entities.User" table="User" catalog="MovieFests" optimistic-lock="version">
         <id name="username" type="string">
@@ -15,7 +15,7 @@
             <column name="Lastname" length="30" />
         </property>
         <property name="email" type="string">
-            <column name="Email" length="50" />
+            <column name="Email" length="100" />
         </property>
         <property name="phone" type="string">
             <column name="Phone" length="20" />
