@@ -90,7 +90,7 @@
                         </div>
                         
                         <div class="row">
-                            <div class="offset-md-2 col-md-4">
+                            <div class="col-md-4">
                                 <p:dataList value="#{userController.UMovie.projections}" var="elem" type="ordered" paginator="true" rows="5">
                                     <f:facet name="header">
                                         Projections                                
@@ -105,6 +105,14 @@
                                         Actors                               
                                     </f:facet>
                                     #{elem.name}
+                                </p:dataList>
+                            </div>
+                            <div class="col-md-4">
+                                <p:dataList value="#{userController.feedbacks}" var="elem" type="ordered" paginator="true" rows="5">
+                                    <f:facet name="header">
+                                        Comments                               
+                                    </f:facet>
+                                    #{elem.comment}
                                 </p:dataList>
                             </div>
                         </div>

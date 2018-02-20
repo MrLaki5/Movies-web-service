@@ -154,4 +154,19 @@ public class MovieHelper implements Serializable{
         number=number/cntNumber;
         return number;
     }
+    
+        public List<Feedback> getRateCommentsForMovie(int idMovie){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        List<Feedback> feedback=null;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select feed from Movie movie, Feedback feed where feed.idMovie=movie.idMovie AND movie.idMovie="+idMovie);
+            feedback=(List<Feedback>) q.list();
+            tx.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return feedback;
+    }
 }

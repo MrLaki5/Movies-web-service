@@ -69,6 +69,7 @@ public class UserController {
     private List<Actor> actorsMovie=null;
     private int numberExpired=0;
     private double movieRatings=0;
+    private List<Feedback> feedbacks=null;
     
     private int reservationsLeft=0;
     private ProjectionWithFestWithLocation currProjection=null;
@@ -77,6 +78,7 @@ public class UserController {
     private String reservColor="";
     
     private List<ReservationWithRating> resForMessage=null;
+    
     
     private String []colorsMarker={"blue", "red", "green", "yellow", "orange", "pink", "purple"};
     
@@ -123,6 +125,7 @@ public class UserController {
         movieRatings=mp.getRateForMovie(projection.getMovie().getIdMovie());
         UMovie=mp.getUltraMovie(projection.getMovie().getIdMovie());
         actorsMovie=mp.getActorsForMovie(projection.getMovie().getIdMovie());
+        feedbacks=mp.getRateCommentsForMovie(projection.getProjection().getIdMovie());
         imagesMovie=mp.getImagesForMovie(projection.getMovie().getIdMovie());
         numberExpired=new ReservationHelper().getNumberOfExpiredReservations(getUsername());
         return "movieDetails?faces-redirect=true";
@@ -386,6 +389,14 @@ public class UserController {
     }
     
     //GETTERS AMD SETTERS===========
+
+    public List<Feedback> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(List<Feedback> feedbacks) {
+        this.feedbacks = feedbacks;
+    }
 
     public double getMovieRatings() {
         return movieRatings;
