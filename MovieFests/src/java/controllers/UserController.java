@@ -68,6 +68,7 @@ public class UserController {
     private List<Galery> imagesMovie=null;
     private List<Actor> actorsMovie=null;
     private int numberExpired=0;
+    private double movieRatings=0;
     
     private int reservationsLeft=0;
     private ProjectionWithFestWithLocation currProjection=null;
@@ -119,6 +120,7 @@ public class UserController {
     
     public String goMovieDetails(ProjectionWithMovie projection){
         MovieHelper mp=new MovieHelper();
+        movieRatings=mp.getRateForMovie(projection.getMovie().getIdMovie());
         UMovie=mp.getUltraMovie(projection.getMovie().getIdMovie());
         actorsMovie=mp.getActorsForMovie(projection.getMovie().getIdMovie());
         imagesMovie=mp.getImagesForMovie(projection.getMovie().getIdMovie());
@@ -292,8 +294,7 @@ public class UserController {
             tempFlag=rp.chekcIfCodeExsists(codeStr);
         }
         String username=getUsername();
-        Reservation reservation=new Reservation(codeStr, new Date(), "Reserved", reservTickets, username, currProjection.getProjection().getIdProjection(), currProjection.getProjection().getStatus());
-        reservation.setVersion(currProjection.getProjection().getVersion());
+        Reservation reservation=new Reservation(codeStr, new Date(), "Reserved", reservTickets, username, currProjection.getProjection().getIdProjection(), currProjection.getProjection().getStatus(), currProjection.getProjection().getVrCount());
         rp.seveReservation(reservation);
         
         reservError="Reservation successful, your code: "+codeStr;
@@ -380,12 +381,20 @@ public class UserController {
     }
     
     public void hideMessage(ReservationWithRating elem){
-        new ReservationHelper().UpdateReservationVersion(elem.getReservation().getIdRes(), elem.getProjection().getVersion());
+        new ReservationHelper().UpdateReservationVersion(elem.getReservation().getIdRes(), elem.getProjection().getVrCount());
         resForMessage=new ReservationHelper().getAllChangedReservations(getUsername());       
     }
     
     //GETTERS AMD SETTERS===========
 
+    public double getMovieRatings() {
+        return movieRatings;
+    }
+
+    public void setMovieRatings(double movieRatings) {
+        this.movieRatings = movieRatings;
+    }
+    
     public List<ReservationWithRating> getResForMessage() {       
         return resForMessage;
     }

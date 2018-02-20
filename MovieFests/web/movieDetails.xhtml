@@ -45,6 +45,8 @@
                                 <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
                                     <p:outputLabel for="movieName" value="Movie name:"/>
                                     <p:outputLabel id="movieName" value="#{userController.UMovie.movie.name}"/>
+                                    <p:outputLabel for="movieRating" value="Rate:"/>
+                                    <p:outputLabel id="movieRating" value="#{userController.movieRatings}"/>
                                     <p:outputLabel for="movieYear" value="Movie year:"/>
                                     <p:outputLabel id="movieYear" value="#{userController.UMovie.movie.year}"/>                                   
                                     <p:outputLabel for="aboutInf" value="About:"/>

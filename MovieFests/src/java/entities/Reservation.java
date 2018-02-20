@@ -1,5 +1,5 @@
 package entities;
-// Generated Feb 18, 2018 8:22:58 PM by Hibernate Tools 4.3.1
+// Generated Feb 20, 2018 8:06:48 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -11,7 +11,6 @@ public class Reservation  implements java.io.Serializable {
 
 
      private Integer idRes;
-     private Integer version;
      private String code;
      private Date date;
      private String type;
@@ -19,11 +18,12 @@ public class Reservation  implements java.io.Serializable {
      private String username;
      private Integer idProjection;
      private String status;
+     private Integer vrCount;
 
     public Reservation() {
     }
 
-    public Reservation(String code, Date date, String type, Integer ticketNum, String username, Integer idProjection, String status) {
+    public Reservation(String code, Date date, String type, Integer ticketNum, String username, Integer idProjection, String status, Integer vrCount) {
        this.code = code;
        this.date = date;
        this.type = type;
@@ -31,6 +31,7 @@ public class Reservation  implements java.io.Serializable {
        this.username = username;
        this.idProjection = idProjection;
        this.status = status;
+       this.vrCount = vrCount;
     }
    
     public Integer getIdRes() {
@@ -39,13 +40,6 @@ public class Reservation  implements java.io.Serializable {
     
     public void setIdRes(Integer idRes) {
         this.idRes = idRes;
-    }
-    public Integer getVersion() {
-        return this.version;
-    }
-    
-    public void setVersion(Integer version) {
-        this.version = version;
     }
     public String getCode() {
         return this.code;
@@ -95,6 +89,13 @@ public class Reservation  implements java.io.Serializable {
     
     public void setStatus(String status) {
         this.status = status;
+    }
+    public Integer getVrCount() {
+        return this.vrCount;
+    }
+    
+    public void setVrCount(Integer vrCount) {
+        this.vrCount = vrCount;
     }
 
 

@@ -457,8 +457,7 @@ public class AdminController {
             lp.saveOnLocation(onLocation);
         }
         for (ProjElem projection : projections) {
-            Projection pro=new Projection(projection.getMovie().getMovie().getIdMovie(), projection.getLocation().getIdHall(), projection.getTime(), "on", projection.getPrice());
-            pro.setVersion(0);
+            Projection pro=new Projection(projection.getMovie().getMovie().getIdMovie(), projection.getLocation().getIdHall(), projection.getTime(), "on", 0, projection.getPrice());
             pp.saveProjection(pro);
             OnFest onFest=new OnFest(new OnFestId(newFest.getIdFest(), pro.getIdProjection()));
             pp.saveOnFest(onFest);
@@ -905,6 +904,9 @@ public class AdminController {
     }
     
     public void setUserType(String typeS){
+        if(typeS==null){
+            return;
+        }
         String []niz=typeS.split(" ");
         nameMap.replace(niz[1], niz[0]);
         tempFlag=1;

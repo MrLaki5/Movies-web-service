@@ -8,6 +8,7 @@ package db;
 import beans.ProjectionWithFestWithLocation;
 import beans.UltraMovie;
 import entities.Actor;
+import entities.Feedback;
 import entities.Festival;
 import entities.Galery;
 import entities.Movie;
@@ -127,5 +128,30 @@ public class MovieHelper implements Serializable{
             e.printStackTrace();
         }
         return images;
+    }
+    
+    public double getRateForMovie(int idMovie){
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        List<Feedback> feedback=null;
+        double number=0;
+        double cntNumber=0;
+        try{
+            org.hibernate.Transaction tx= session.beginTransaction();
+            Query q=session.createQuery("select feed from Movie movie, Feedback feed where feed.idMovie=movie.idMovie AND movie.idMovie="+idMovie);
+            feedback=(List<Feedback>) q.list();
+            tx.commit();
+            for (Feedback feedback1 : feedback) {
+                cntNumber++;
+                number+=feedback1.getRate();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        if(cntNumber==0){
+            return 1;
+        }
+        number=number/cntNumber;
+        return number;
     }
 }

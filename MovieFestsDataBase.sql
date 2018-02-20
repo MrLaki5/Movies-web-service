@@ -93,7 +93,7 @@ CREATE TABLE Projection
 	IdHall               INTEGER NULL,
 	Date                 DATETIME NULL,
 	Status               VARCHAR(20) NULL,
-	Version              INTEGER NULL,
+	VrCount              INTEGER NULL,
 	Price                INTEGER NULL,
 	CONSTRAINT XPKProjection PRIMARY KEY (IdProjection)
 )
@@ -109,7 +109,7 @@ CREATE TABLE Reservation
 	Username             VARCHAR(20) NULL,
 	IdProjection         INTEGER NULL,
 	Status               VARCHAR(20) NULL,
-	Version              INTEGER NULL,
+	VrCount              INTEGER NULL,
 	CONSTRAINT XPKReservation PRIMARY KEY (IdRes)
 )
  AUTO_INCREMENT = 1;

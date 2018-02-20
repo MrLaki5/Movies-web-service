@@ -1,7 +1,9 @@
-update User set Type='User' where Username='mimar';
+update User set Type='Admin' where Username='mimar';
 
 
+select * from Galery;
 
+update User set Type='User' where Username='kokoska';
 
 
 insert into Festival(DateFrom, DateTo, Name) values('2018-2-17', '2018-2-22', 'FESTone');
@@ -37,5 +39,10 @@ insert into Reservation(Code, Date, TicketNum, Username, IdProjection, Type) val
 insert into Reservation(Code, Date, TicketNum, Username, IdProjection, Type) values('KOVHBESJDK', '2018-2-16', 3, 'mimar', 5, 'Bought');
 
 
-insert into Reservation(Code, Date, TicketNum, Username, IdProjection, Type) values('PKVHBESJDK', '2018-2-16', 1, 'mimar', 5, 'Reserved');
+insert into Reservation(Code, Date, TicketNum, Username, IdProjection, Type) values('PKVHBESJDK', '2018-2-16', 1, 'kokoska', 5, 'Bought');
 insert into Reservation(Code, Date, TicketNum, Username, IdProjection, Type) values('TKVHBESJDK', '2018-2-16', 3, 'mimar', 2, 'Reserved');
+
+
+insert into Reservation(Code, Date, TicketNum, Username, IdProjection, Type, Status, Version) values('MOLIMTERAD', '2016-2-17', 5, 'mimar2', 4, 'Reserved', '', 0);
+
+insert into Reservation(Code, Date, TicketNum, Username, IdProjection, Type, Status, Version) values('MOLIMTERAD', '2018-2-17', 5, 'kokoska', 4, 'Reserved', '', 0);

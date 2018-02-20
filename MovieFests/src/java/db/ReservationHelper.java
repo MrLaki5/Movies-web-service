@@ -123,7 +123,7 @@ public class ReservationHelper  implements Serializable{
            
             Query q=session.createQuery("from Reservation as res where res.idRes="+idRes);
             Reservation rezervacija=(Reservation) q.uniqueResult();
-            rezervacija.setVersion(newVersion);
+            rezervacija.setVrCount(newVersion);
             session.saveOrUpdate(rezervacija);
             session.getTransaction().commit();
         }
@@ -265,7 +265,7 @@ public class ReservationHelper  implements Serializable{
             session=HibernateUtil.getSessionFactory().getCurrentSession();
             org.hibernate.Transaction tx= session.beginTransaction();
             Query q=session.createQuery("select reg from Reservation reg, Projection proj where reg.username='"+username+"' "
-                    + " AND reg.idProjection=proj.idProjection AND reg.version!=proj.version AND proj.date>='"+dateStr1+"'");
+                    + " AND reg.idProjection=proj.idProjection AND reg.vrCount!=proj.vrCount AND proj.date>='"+dateStr1+"'");
             List<Reservation> rezervacije=(List<Reservation>) q.list();
             tx.commit();
             

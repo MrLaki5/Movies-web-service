@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Feb 18, 2018 8:22:59 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Feb 20, 2018 8:06:49 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entities.Feedback" table="Feedback" catalog="MovieFests" optimistic-lock="version">
         <id name="idRes" type="int">

@@ -213,7 +213,7 @@ public class ProjectionHelper implements Serializable{
            
             Query q=session.createQuery("from Projection as res where res.idProjection="+idProj);
             Projection projection=(Projection) q.uniqueResult();
-            projection.setVersion(projection.getVersion()+1);
+            projection.setVrCount(projection.getVrCount()+1);
             session.saveOrUpdate(projection);
             session.getTransaction().commit();
         }
