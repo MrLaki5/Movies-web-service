@@ -9,6 +9,7 @@ import beans.ProjectionWithMovie;
 import beans.ReservationWithUser;
 import db.ProjectionHelper;
 import db.ReservationHelper;
+import entities.Projection;
 import entities.Reservation;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class SellerController implements Serializable{
     
     private ReservationWithUser currElem;
     
+    private int currPrice=0;
+    
     private int ticketNum=0;
     private ProjectionWithMovie currProj;
     
@@ -49,6 +52,8 @@ public class SellerController implements Serializable{
     
     public String goSellTickets(ReservationWithUser elem){
         currElem=elem;
+        Projection projection=new ProjectionHelper().getProjectionFromReservation(elem.getReservation());
+        currPrice=projection.getPrice();
         return "sellTickets?faces-redirect=true";
     }
     
@@ -65,6 +70,14 @@ public class SellerController implements Serializable{
     }
     
     //GETTER AND SETTERS
+
+    public int getCurrPrice() {
+        return currPrice;
+    }
+
+    public void setCurrPrice(int currPrice) {
+        this.currPrice = currPrice;
+    }
 
     public String getCodeF() {
         return CodeF;

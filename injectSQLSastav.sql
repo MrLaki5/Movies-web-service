@@ -1,6 +1,6 @@
 insert into User(Username, Firstname, Lastname, Email, Phone, Password, Type) values('Admin', 'Adminko','Adminovic','admin@gmail.com','0645896857','MIlan123!','Admin' );
 insert into User(Username, Firstname, Lastname, Email, Phone, Password, Type) values('Seller', 'Seler','Selenkovic','seler@gmail.com','0649872182','MIlan123!','Seller' );
-insert into User(Username, Firstname, Lastname, Email, Phone, Password, Type) values('User', 'Userko','Userkovic','user@gmail.com','0645896857','MIlan123!','User' );
+insert into User(Username, Firstname, Lastname, Email, Phone, Password, Type) values('User', 'Nikola','Jokic','user@gmail.com','0645896857','MIlan123!','User' );
 insert into User(Username, Firstname, Lastname, Email, Phone, Password, Type) values('User2', 'Pera','Perovic','pera@gmail.com','0645896857','MIlan123!','NoType' );
 
 insert into Festival(DateFrom, DateTo, Name, Info, TicketNum) values('2018-2-15', '2018-2-20', 'FESTone','This is first fest. Its very first such fest.',15);  				/* 1 */

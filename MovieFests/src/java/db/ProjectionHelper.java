@@ -13,7 +13,7 @@ import entities.Location;
 import entities.Movie;
 import entities.OnFest;
 import entities.Projection;
-import entities.User;
+import entities.Reservation;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +28,23 @@ import org.hibernate.Session;
  * @author milanlazarevic
  */
 public class ProjectionHelper implements Serializable{
+    
+    public Projection getProjectionFromReservation(Reservation reservation){
+        try{
+            Session session=null;
+            session=HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();          
+           
+            Query q=session.createQuery("from Projection as res where res.idProjection="+reservation.getIdProjection());
+            Projection projection=(Projection) q.uniqueResult();
+            session.getTransaction().commit();
+            return projection;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     
     public void saveProjection(Projection projection){
         Session session=null;
