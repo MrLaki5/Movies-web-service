@@ -29,10 +29,13 @@
 
                 <h:form id="cont_form" enctype="multipart/form-data">
                     <div class="container-fluid" align="center">                    
-                        <div class="row">
-                            <div class="col-md-12" style="height: 100px">
+                        <div class="row"  style="height: 100px">
+                            <div class="col-md-12">
                                 <br/>
                                 <h1 class="h3 mb-3 font-weight-normal">Create movie:</h1>
+                            </div>
+                            <div class="offset-md-8 col-md-2">
+                                <h:commandLink value="Add from json" action="#{adminController.goNewMovieJSON()}" class="text-primary"/>
                             </div>
                         </div>
                         <div class="row">

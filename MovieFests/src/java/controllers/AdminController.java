@@ -8,6 +8,7 @@ package controllers;
 import beans.FestivalWithLocations;
 import beans.LocElem;
 import beans.MovieEnc;
+import beans.MovieEncJ;
 import beans.ProjElem;
 import beans.ProjectionWithMovie;
 import beans.ReservationWithRating;
@@ -115,6 +116,16 @@ public class AdminController {
     private FestivalWithLocations currFestival=null;
     private String currFestivalName="";
     
+    private UploadedFile jsonMovieFile=null;
+    private int rootJSONB=0;
+    private String ErrorJsonMovie="";
+    private List<MovieEncJ> moviesNewJSON=null;
+    private MovieEncJ currMovieJ=null;
+    private String currMovieJNameYear="";
+    
+    private String currMovieytTrailer="";
+    private UploadedFile currMovieImage=null;
+    
     //REDIRECT
     
     public String goNewFestivalJSON(){
@@ -194,6 +205,26 @@ public class AdminController {
         EditMovieForProjection=""+currEditProj.getMovie().getIdMovie();
         EditTempLock=currEditProj.getLocation().getAdress()+"_"+currEditProj.getLocation().getBuilding();
         return "projectionEdit?faces-redirect=true";
+    }
+    
+    public String goNewMovieJSON(){
+        jsonMovieFile=null;
+        ErrorJsonMovie="";
+        moviesNewJSON=null;
+        return "newJSONMovie?faces-redirect=true";
+    }
+    
+    public String goNewMovie2JSON(){
+        currMovieJ=moviesNewJSON.get(0);
+        currMovieJNameYear=currMovieJ.getMovieNameYear();
+        currMovieytTrailer="";
+        currMovieImage=null;
+        ErrorMovie="";
+        return "newJSONMovie2?faces-redirect=true";
+    }
+    
+    public String goNewMovieBack(){
+        return "newMovie?faces-redirect=true";
     }
     
     public String goNewMovie(){
@@ -705,6 +736,126 @@ public class AdminController {
         
     }
     
+    public String saveMovieJSON(){
+        
+        for (MovieEncJ movieEncJ : moviesNewJSON) {
+            if(movieEncJ.getImages().size()<2){
+                ErrorMovie="There must be two images per movie";
+                return "";
+            }
+        }
+        
+        for (MovieEncJ movieEncJ : moviesNewJSON) {
+            String imageName="";
+            String filename = "1"; 
+            String extension = movieEncJ.getImages().get(0).getContentType().split("/")[1];
+            try {
+                Path temp=Paths.get(AdminController.image_path);
+                Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
+                InputStream input = movieEncJ.getImages().get(0).getInputstream();
+                Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
+                String []nizStr=file1.toString().split("/");
+                imageName=nizStr[nizStr.length-1];
+                movieEncJ.getImages().remove(0);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            movieEncJ.getMovie().setPicture(imageName);
+            MovieHelper mp=new MovieHelper();       
+            mp.saveMovie(movieEncJ.getMovie());
+            
+            for (Actor actor : movieEncJ.getActors()) {
+                mp.saveActor(new Actor(actor.getName(), movieEncJ.getMovie().getIdMovie()));
+            }
+            
+            for (UploadedFile image : movieEncJ.getImages()) {
+            
+                imageName="";        
+                if(!image.getFileName().equals("")){
+                    filename = "2"; 
+                    extension = image.getContentType().split("/")[1];
+                    try {
+                        Path temp=Paths.get(AdminController.image_path);
+                        Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
+                        InputStream input = image.getInputstream();
+                        Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
+                        String []nizStr=file1.toString().split("/");
+                        imageName=nizStr[nizStr.length-1];
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+                if(!imageName.equals("")){
+                    mp.saveGalery(new Galery(imageName, movieEncJ.getMovie().getIdMovie()));
+                }
+            }
+        }
+        ErrorMovie="";
+        if(rootB==1){
+            return goNewFestival2Back();
+        }
+        else{
+            if(rootB==2){
+                return goNewFestival2JSONBack();
+            }
+            return goNewMovie();
+        }       
+    }
+    
+    public String addJsonMovieNew(){
+        try{
+            java.util.Scanner scan = new java.util.Scanner(jsonMovieFile.getInputstream());
+            String str = new String();
+            while (scan.hasNext())
+                str += scan.nextLine();
+            scan.close();
+            
+            List<MovieEncJ> newMoviesJson=new ArrayList<>();
+            
+            JSONObject obj = new JSONObject(str);
+            JSONArray moviesJSON=obj.getJSONArray("Movies");
+            for(int i=0; i<moviesJSON.length();i++){
+                JSONObject movieJSON=moviesJSON.getJSONObject(i);
+                String mName=movieJSON.getString("Title");
+                int mYear=movieJSON.getInt("Year");
+                String mAbout=movieJSON.getString("Summary");
+                int mLength=movieJSON.getInt("Runtime");
+                String mCountry=movieJSON.getString("Country");
+                String mImdb=movieJSON.getString("Link1");
+                String mDirector=movieJSON.getString("Director");
+                if(mImdb.equals("/")){
+                    mImdb="";
+                }
+                String mRot=movieJSON.getString("Link2");
+                if(mRot.equals("/")){
+                    mRot="";
+                }              
+                String []mActors=(movieJSON.getString("Stars")).split(",");
+                List<Actor> tempActors=new ArrayList<>();
+                for (String mActor : mActors) {
+                    tempActors.add(new Actor(mActor, 0));
+                }
+                
+                MovieEncJ movieEJ=new MovieEncJ(new Movie(mName, "", mYear, mAbout, mDirector, mLength, mCountry, mImdb, mRot, ""));
+                movieEJ.setActors(tempActors);
+                newMoviesJson.add(movieEJ);
+            }
+            
+            ErrorJsonMovie="";
+            
+            moviesNewJSON=newMoviesJson;
+            
+            return goNewMovie2JSON();
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }
+        
+        ErrorJsonMovie="Error in parsing file";
+        return "";
+    }
+    
     public String addJsonFestivalNew(){
         try{
             java.util.Scanner scan = new java.util.Scanner(jsonFestivalFile.getInputstream());
@@ -775,7 +926,104 @@ public class AdminController {
         timeDate=null;
     }
     
+    public void onChangeCurrMovieJ(){
+        for (MovieEncJ movieEncJ : moviesNewJSON) {
+            if(movieEncJ.getMovieNameYear().equals(currMovieJNameYear)){
+                currMovieJ=movieEncJ;
+                break;
+            }
+        }
+        currMovieytTrailer="";
+        currMovieImage=null;
+    }
+    
+    public void addImageToCurrMovie(){
+        if(currMovieImage.getFileName().equals("")){
+            return;
+        }
+        for (UploadedFile image : currMovieJ.getImages()) {
+            if(image.getFileName().equals(currMovieImage.getFileName())){
+                return;
+            }
+        }
+        currMovieJ.getImages().add(currMovieImage);
+    }
+    
+    public void removeImageFromCurrMovie(UploadedFile uFile){
+        for (UploadedFile image : currMovieJ.getImages()) {
+            if(image.getFileName().equals(uFile.getFileName())){
+                currMovieJ.getImages().remove(uFile);
+                return;
+            }
+        }
+        currMovieJ.getImages().add(uFile);
+    }
+    
     //GETTERS AND SETTERS
+
+    public List<MovieEncJ> getMoviesNewJSON() {
+        return moviesNewJSON;
+    }
+
+    public void setMoviesNewJSON(List<MovieEncJ> moviesNewJSON) {
+        this.moviesNewJSON = moviesNewJSON;
+    }
+
+    public MovieEncJ getCurrMovieJ() {
+        return currMovieJ;
+    }
+
+    public void setCurrMovieJ(MovieEncJ currMovieJ) {
+        this.currMovieJ = currMovieJ;
+    }
+
+    public String getCurrMovieJNameYear() {
+        return currMovieJNameYear;
+    }
+
+    public void setCurrMovieJNameYear(String currMovieJNameYear) {
+        this.currMovieJNameYear = currMovieJNameYear;
+    }
+
+    public String getCurrMovieytTrailer() {
+        return currMovieytTrailer;
+    }
+
+    public void setCurrMovieytTrailer(String currMovieytTrailer) {
+        this.currMovieytTrailer = currMovieytTrailer;
+    }
+
+    public UploadedFile getCurrMovieImage() {
+        return currMovieImage;
+    }
+
+    public void setCurrMovieImage(UploadedFile currMovieImage) {
+        this.currMovieImage = currMovieImage;
+    }
+
+    public String getErrorJsonMovie() {
+        return ErrorJsonMovie;
+    }
+
+    public void setErrorJsonMovie(String ErrorJsonMovie) {
+        this.ErrorJsonMovie = ErrorJsonMovie;
+    }
+
+    public int getRootJSONB() {
+        return rootJSONB;
+    }
+
+    public void setRootJSONB(int rootJSONB) {
+        this.rootJSONB = rootJSONB;
+    }
+
+    public UploadedFile getJsonMovieFile() {
+        return jsonMovieFile;
+    }
+
+    public void setJsonMovieFile(UploadedFile jsonMovieFile) {
+        this.jsonMovieFile = jsonMovieFile;
+    }
 
     public String getCurrFestivalName() {
         return currFestivalName;

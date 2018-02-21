@@ -61,7 +61,7 @@ CREATE TABLE Movie
 	Name                 VARCHAR(50) NULL,
 	Picture              VARCHAR(100) NULL,
 	Year                 INTEGER NULL,
-	About                VARCHAR(200) NULL,
+	About                VARCHAR(900) NULL,
 	Director             VARCHAR(50) NULL,
 	Length               INTEGER NULL,
 	Country              VARCHAR(30) NULL,

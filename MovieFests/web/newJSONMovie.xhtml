@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <!-- Bootstrap core CSS -->
+        <link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <!-- Custom styles for this template -->
+        <link href="resources/css/modern-business.css" rel="stylesheet"/>
+
+        <title>Movie Fests</title>
+
+    </h:head>
+
+    <h:body>  
+
+        <c:choose>
+            <c:when test="#{loginController.isLoged==3}">
+                
+                <ui:insert name = "header" >
+                    <ui:include src = "templates/header.xhtml" />
+                </ui:insert> 
+                
+                
+                <h:form id="cont_form" enctype="multipart/form-data">
+                    <div class="container-fluid" align="center">                    
+                        <div class="row">
+                            <div class="col-md-12" style="height: 100px">
+                                <br/>
+                                <h1 class="h3 mb-3 font-weight-normal">Create movie:</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-4 col-md-8">
+                                
+                                <p:steps activeIndex="0" styleClass="custom" readonly="false">
+                                    <p:menuitem value="Load file"/>
+                                    <p:menuitem value="Add media"/>
+                                </p:steps>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="height: 100px">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-2 col-md-8">
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                    <p:outputLabel for="festivalAdd" value="Movie json file:"/>
+                                    <p:fileUpload value="#{adminController.jsonMovieFile}" mode="simple" id="festivalAdd"/>
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="height: 50px">
+                                <br/>
+                                <h:outputText class="text-danger" value="#{adminController.errorJsonMovie}" id="errorMessage"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.goNewMovieBack()}" value="Back"/>
+                                &nbsp;
+                                <h:commandButton class="btn btn-lg btn-primary" action="#{adminController.addJsonMovieNew()}" value="Next">
+                                    <f:ajax execute="cont_form" render="errorMessage"/>
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+                    
+                <style type="text/css">
+                    .ui-steps .ui-steps-item {
+                        width: 24%;
+                    }
+
+                    .ui-state-highlight {
+                        text-shadow: none !important;
+                    }
+
+                    .ui-steps.custom {
+                        margin-bottom: 30px;
+                    }
+
+                    .ui-steps.custom .ui-steps-item .ui-menuitem-link {
+                        height: 10px;
+                        padding: 0 1em;
+                    }
+
+                    .ui-steps.custom .ui-steps-item .ui-steps-number {
+                        background-color: #0081c2;
+                        color: #FFFFFF;
+                        display: inline-block;
+                        width: 30px;
+                        border-radius: 10px;
+                        margin-top: -10px;
+                        margin-bottom: 10px;
+                    }
+
+                    .ui-steps.custom .ui-steps-item.ui-state-highlight .ui-steps-title {
+                        color: #555;
+                    }
+                </style>
+                
+                <ui:insert name = "foother" >
+                    <ui:include src = "templates/foother.xhtml" />
+                </ui:insert> 
+                
+            </c:when>
+            <c:otherwise>
+                <ui:insert name="header">
+                    <ui:include src="templates/error.xhtml"/>
+                </ui:insert>
+            </c:otherwise>
+        </c:choose>
+    </h:body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
