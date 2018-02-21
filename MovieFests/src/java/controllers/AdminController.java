@@ -742,17 +742,20 @@ public class AdminController implements Serializable{
         for (MovieEncJ movieEncJ : moviesNewJSON) {
             String imageName="";
             String filename = "1"; 
-            String extension = movieEncJ.getImages().get(0).getContentType().split("/")[1];
-            try {
-                Path temp=Paths.get(AdminController.image_path);
-                Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
-                InputStream input = movieEncJ.getImages().get(0).getInputstream();
-                Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
-                String []nizStr=file1.toString().split("/");
-                imageName=nizStr[nizStr.length-1];
-                movieEncJ.getImages().remove(0);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            String extension = "";          
+            if(movieEncJ.getImages().size()>0){
+                extension=movieEncJ.getImages().get(0).getContentType().split("/")[1];
+                try {
+                    Path temp=Paths.get(AdminController.image_path);
+                    Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
+                    InputStream input = movieEncJ.getImages().get(0).getInputstream();
+                    Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
+                    String []nizStr=file1.toString().split("/");
+                    imageName=nizStr[nizStr.length-1];
+                    movieEncJ.getImages().remove(0);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }     
             }
             movieEncJ.getMovie().setPicture(imageName);
             MovieHelper mp=new MovieHelper();       
