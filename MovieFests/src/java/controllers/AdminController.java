@@ -11,14 +11,11 @@ import beans.MovieEnc;
 import beans.MovieEncJ;
 import beans.ProjElem;
 import beans.ProjectionWithMovie;
-import beans.ReservationWithRating;
 import beans.UltraFest;
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import db.FestivalHelper;
 import db.LocationHelper;
 import db.MovieHelper;
 import db.ProjectionHelper;
-import db.ReservationHelper;
 import db.UserHelper;
 import entities.Actor;
 import entities.Festival;
@@ -32,8 +29,8 @@ import entities.OnLocation;
 import entities.OnLocationId;
 import entities.Projection;
 import entities.User;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,8 +44,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -56,7 +51,6 @@ import javax.faces.context.FacesContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.primefaces.model.UploadedFile;
-import sun.misc.IOUtils;
 
 
 /**
@@ -66,7 +60,7 @@ import sun.misc.IOUtils;
 
 @ManagedBean
 @SessionScoped
-public class AdminController {
+public class AdminController implements Serializable{
 
     public static final String image_path="/Users/milanlazarevic/Desktop/movies-site-java-faces/MovieFests/web/Images";
     

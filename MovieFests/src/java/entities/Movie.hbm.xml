@@ -18,7 +18,7 @@
             <column name="Year" />
         </property>
         <property name="about" type="string">
-            <column name="About" length="200" />
+            <column name="About" length="900" />
         </property>
         <property name="director" type="string">
             <column name="Director" length="50" />
