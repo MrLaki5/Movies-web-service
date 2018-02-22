@@ -63,7 +63,7 @@ import org.primefaces.model.UploadedFile;
 public class AdminController implements Serializable{
 
     public static final String image_path="/Users/milanlazarevic/Desktop/movies-site-java-faces/MovieFests/web/Images";
-    public static final String image_parser="/";
+    public static final String image_parser="/"; //windows="\\\\" mac="/"
     
     private Map<String, String> nameMap=new HashMap<>();;
     private int tempFlag=0;
