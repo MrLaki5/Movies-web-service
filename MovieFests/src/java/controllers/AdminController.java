@@ -63,7 +63,7 @@ import org.primefaces.model.UploadedFile;
 public class AdminController implements Serializable{
 
     public static final String image_path="/Users/milanlazarevic/Desktop/movies-site-java-faces/MovieFests/web/Images";
-    
+    public static final String image_parser="/";
     
     private Map<String, String> nameMap=new HashMap<>();;
     private int tempFlag=0;
@@ -675,7 +675,7 @@ public class AdminController implements Serializable{
                 Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
                 InputStream input = images.get(0).getInputstream();
                 Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
-                String []nizStr=file1.toString().split("/");
+                String []nizStr=file1.toString().split(image_parser);
                 imageName=nizStr[nizStr.length-1];
                 images.remove(0);
             } catch (Exception ex) {
@@ -706,7 +706,7 @@ public class AdminController implements Serializable{
                     Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
                     InputStream input = image.getInputstream();
                     Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
-                    String []nizStr=file1.toString().split("/");
+                    String []nizStr=file1.toString().split(image_parser);
                     imageName=nizStr[nizStr.length-1];
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -750,7 +750,7 @@ public class AdminController implements Serializable{
                     Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
                     InputStream input = movieEncJ.getImages().get(0).getInputstream();
                     Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
-                    String []nizStr=file1.toString().split("/");
+                    String []nizStr=file1.toString().split(image_parser);
                     imageName=nizStr[nizStr.length-1];
                     movieEncJ.getImages().remove(0);
                 } catch (Exception ex) {
@@ -776,7 +776,7 @@ public class AdminController implements Serializable{
                         Path file1 = Files.createTempFile(temp, filename + "-", "." + extension);
                         InputStream input = image.getInputstream();
                         Files.copy(input, file1, StandardCopyOption.REPLACE_EXISTING);
-                        String []nizStr=file1.toString().split("/");
+                        String []nizStr=file1.toString().split(image_parser);
                         imageName=nizStr[nizStr.length-1];
                     } catch (Exception ex) {
                         ex.printStackTrace();

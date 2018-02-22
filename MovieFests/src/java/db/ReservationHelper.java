@@ -182,7 +182,7 @@ public class ReservationHelper  implements Serializable{
             Session session=null;
             session=HibernateUtil.getSessionFactory().getCurrentSession();
             org.hibernate.Transaction tx= session.beginTransaction();
-            Query q=session.createQuery("from Reservation as reg where reg.username='"+username+"'");
+            Query q=session.createQuery("select reg from Reservation reg, Projection proj where reg.username='"+username+"' AND reg.idProjection=proj.idProjection AND proj.status!='Canceled'");
             List<Reservation> rezervacije=(List<Reservation>) q.list();
             tx.commit();
             for (Reservation reservation : rezervacije) {
